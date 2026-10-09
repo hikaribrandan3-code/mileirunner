@@ -1,0 +1,43 @@
+{
+  "version": 4,
+  "circus": "v4/circus-calliope.mp3",
+  "gameOver": "v3/game_over.wav",
+  "intro": "v3/intro.wav",
+  "effects": {
+    "jump": "v3/mobile/jump.mp3",
+    "land": "v3/mobile/land.mp3",
+    "slide": "v3/mobile/slide.mp3",
+    "lane": "v3/mobile/lane.mp3",
+    "tp": "v3/mobile/tp.mp3",
+    "dollar": "v3/mobile/dollar.mp3",
+    "power": "v3/mobile/power.mp3",
+    "expire": "v3/mobile/expire.mp3",
+    "stumble": "v3/mobile/stumble.mp3",
+    "destroy": "v3/mobile/destroy.mp3",
+    "fail": "v3/mobile/fail.mp3",
+    "relief": "v3/mobile/relief.mp3",
+    "tap": "v3/mobile/tap.mp3",
+    "countdown": "v3/mobile/countdown.mp3",
+    "panic": "v3/mobile/panic.mp3",
+    "cheer": "v3/mobile/cheer.mp3",
+    "bonk": "kit/bonk.mp3",
+    "collision": "kit/collision_crash.mp3",
+    "camera": "kit/camera_burst.mp3",
+    "cameraClick": "kit/camera_click.mp3",
+    "laugh": "kit/laugh_snicker.mp3",
+    "crowd": "kit/crowd_ooooh.mp3",
+    "siren": "kit/warning_siren.mp3",
+    "whistle": "kit/whistle.mp3",
+    "horn": "kit/traffic_horn.mp3",
+    "groupLaugh": "kit/laugh_group.mp3",
+    "roastLaugh": "kit/laugh_roast.mp3"
+  },
+  "loops": {
+    "magnet": "v3/mobile/magnet.mp3",
+    "lion": "v3/mobile/lion.mp3",
+    "afuera": "kit/chainsaw_loop.mp3",
+    "dollars": "v3/mobile/dollars.mp3",
+    "rescue": "kit/helicopter_loop.mp3"
+  },
+  "license": "Original generated synthesis and local SFX kit; no third-party recordings"
+}

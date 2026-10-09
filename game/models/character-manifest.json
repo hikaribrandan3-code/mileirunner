@@ -1,0 +1,21 @@
+{
+  "source": "Original parameterized sculpt, generated convex rear hair surface and authored skeletal clips",
+  "bones": 24,
+  "vertices": 9667,
+  "polygons": 8455,
+  "clips": [
+    "run",
+    "lean_left",
+    "lean_right",
+    "jump_takeoff",
+    "jump_air",
+    "jump_land",
+    "slide_enter",
+    "slide_hold",
+    "slide_exit",
+    "stumble",
+    "fall",
+    "rescue_hang",
+    "menu_idle"
+  ]
+}
