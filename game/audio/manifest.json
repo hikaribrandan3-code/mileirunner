@@ -1,1 +1,11 @@
-{"circus":null,"gameOver":null,"voiceAfuera":null,"helicopter":null,"chainsaw":null}
+{
+  "introComedy": "../audio/v5/intro-comedy.mp3",
+  "circus": "../audio/v5/silly-serenade-loop.mp3",
+  "gameOver": "../audio/v5/game-over-cat.mp3",
+  "crowd": "../audio/kit/crowd_ooooh.mp3",
+  "laughGroup": "../audio/kit/laugh_group.mp3",
+  "laughRoast": "../audio/kit/laugh_roast.mp3",
+  "voiceAfuera": null,
+  "helicopter": null,
+  "chainsaw": null
+}

@@ -3,23 +3,16 @@ import {PressChase} from './chase.js';
 import {TEMPLATES,shape,supportAt,sweptContact} from './track.js';
 export {STATES,POWERS,QUOTES,meterBand};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const BREAKABLE=new Set(['skip','cone','low','high','block','trash','shampoo','soap','plunger','brush','bags','doublebarrier','camera','mics']);
+const BREAKABLE=new Set(['skip','cone','low','block','trash','shampoo','soap','plunger','brush','bags','doublebarrier','camera']);
 export class RunnerEngine extends LegacyEngine{
  reset(){super.reset();this.chase=new PressChase((type,details)=>this.emit(type,details));this.groundY=0;this.previousGroundY=0;this.previousAirY=0;this.vy=0;this.fastFall=false;this.laneFrom=0;this.laneTime=.16;this.actionAge=0;this.nearCooldown=0;this.lastTemplate=-1;this.patternHistory=[];this.inputHistory=[];this.previousDistance=0;this.previousX=0;this.previousY=0;this.presentationScale=1;this.nextPattern=.1;this.powerGap=7;this.firstPowerSpawned=false;this.jumpTime=0;this.airY=0;this.runSeed=this.seed;this.speed=18;}
  spawn(...args){const o=super.spawn(...args);if(o){o.resolved=false;o.roofReward=false;o.length=shape(o.kind).length;}return o;}
  handoff(){super.handoff();if(this.state===STATES.RUNNING)this.pattern();}
- input(action){if(![STATES.RUNNING,STATES.TUTORIAL].includes(this.state))return false;if(this.state===STATES.TUTORIAL&&!this.tutorialSpawned)this.tutorial(0);this.lastActionTime=this.elapsed;this.actionAge=0;this.inputHistory.push({t:this.elapsed,action});if(this.inputHistory.length>120)this.inputHistory.shift();
-  if(action==='left'||action==='right'){const next=clamp(this.lane+(action==='left'?-1:1),-1,1);if(next===this.lane)return false;this.laneFrom=this.x;this.laneTime=0;this.lane=next;this.emit('lane',{direction:action});if(this.state===STATES.TUTORIAL&&this.tutorialStep===0)this.tutorialAction=true;return true;}
-  if(action==='jump'){if(this.power==='rescue')return false;if(this.jumpY>.01||this.slideTime>0){this.buffer='jump';this.bufferTime=.14;return false;}this.vy=10.5;this.jumpY=.001;this.jumpTime=.84;this.fastFall=false;this.emit('jump');if(this.state===STATES.TUTORIAL&&this.tutorialStep===1)this.tutorialAction=true;return true;}
-  if(action==='slide'){if(this.power==='rescue')return false;if(this.jumpY>.01){this.fastFall=true;this.vy=Math.min(this.vy,-12);return true;}this.slideTime=.78;this.emit('slide');if(this.state===STATES.TUTORIAL&&this.tutorialStep===2)this.tutorialAction=true;return true;}return false;
+ input(action){if(![STATES.RUNNING].includes(this.state))return false;this.lastActionTime=this.elapsed;this.actionAge=0;this.inputHistory.push({t:this.elapsed,action});if(this.inputHistory.length>120)this.inputHistory.shift();
+  if(action==='left'||action==='right'){const next=clamp(this.lane+(action==='left'?-1:1),-1,1);if(next===this.lane)return false;this.laneFrom=this.x;this.laneTime=0;this.lane=next;this.emit('lane',{direction:action});return true;}
+  if(action==='jump'){if(this.power==='rescue')return false;if(this.jumpY>.01||this.slideTime>0){this.buffer='jump';this.bufferTime=.14;return false;}this.vy=10.5;this.jumpY=.001;this.jumpTime=.84;this.fastFall=false;this.emit('jump');return true;}
+  if(action==='slide'){if(this.power==='rescue')return false;if(this.jumpY>.01){this.fastFall=true;this.vy=Math.min(this.vy,-12);return true;}this.slideTime=.78;this.emit('slide');return true;}return false;
  }
- tutorial(dt){this.tutorialTime+=dt;if(!this.tutorialSpawned){this.tutorialSpawned=true;this.tutorialAction=false;this.tutorialCollected=0;this.tutorialMiss=false;this.pool.clear();const z=this.speed*2.1;if(this.tutorialStep===0)this.trail(this.lane===1?0:1,z,4);if(this.tutorialStep===1){this.spawn('low',this.lane,z);this.trail(this.lane,z+2,3,{arc:true});}if(this.tutorialStep===2)this.spawn('high',this.lane,z);if(this.tutorialStep===3){this.meter=60;this.trail(this.lane,z,4);}this.emit('tutorial',{step:this.tutorialStep});}
-  const acted=this.tutorialStep<3?this.tutorialAction:this.tutorialCollected>=2;const obstacle=this.pool.items.some(o=>o.active&&!o.resolved&&!['tp','dollar','power'].includes(o.kind));
-  const success=acted&&!this.tutorialMiss&&this.tutorialTime>1.25&&!obstacle;
-  if(success){this.tutorialStep++;this.tutorialTime=0;this.tutorialSpawned=false;if(this.tutorialStep>=4)this.finishTutorial();}
-  else if(this.tutorialTime>3.05){this.tutorialTime=0;this.tutorialSpawned=false;this.emit('tutorialRetry',{step:this.tutorialStep});}
- }
- finishTutorial(){this.progress.tutorial=true;this.state=STATES.RUNNING;this.pool.clear();this.nextPattern=.2;this.powerGap=0;this.emit('save');this.emit('tutorialDone');}
  pattern(){const band=this.elapsed<12?0:this.elapsed<45?1:2;const phase=['challenge','build','peak','recovery'][this.group%4];this.rhythmPhase=phase;const eligible=TEMPLATES.filter(t=>t.id>=4&&t.band<=band&&t.id!==this.lastTemplate);let choices=eligible.filter(t=>phase==='recovery'?['landing-relief','magnet-relief','first-bus'].includes(t.name):phase==='peak'?t.band===band:t.name!=='landing-relief'&&t.name!=='magnet-relief');if(!choices.length)choices=eligible;const index=Math.floor(this.random()*choices.length);const opening=['sunny-corridor','ramp-route','jump-and-duck','taxi-squeeze','dumpster-slalom','press-weave','curbside'];const forced=this.group<7?opening[this.group]:this.group%5===1?'ramp-route':null;const t=forced?TEMPLATES.find(t=>t.name===forced):choices[index];this.lastTemplate=t.id;this.group++;const mirror=this.random()<.5?-1:1;const start=this.group===1?36:48;if(this.group===1)this.trail(0,12,3);for(const r of t.rows)for(const[kind,lane]of r.items)this.spawn(this.streetVariant(this.hygieneVariant(kind,t),t),lane*mirror,start+r.d);
   // Each template has recovery spacing; roof paths have a raised reward route.
   let safe=this.lastSafe;const first=t.rows[0]?.items||[];const occupied=new Set(first.map(i=>i[1]*mirror));const free=[-1,0,1].filter(l=>!occupied.has(l));if(free.length)safe=free.reduce((a,b)=>Math.abs(a-this.lane)<Math.abs(b-this.lane)?a:b);else safe=this.lane;
@@ -31,10 +24,10 @@ export class RunnerEngine extends LegacyEngine{
   // Recovery paper anchors a readable route at every template join.
   this.trail(safe,start+t.length,phase==='recovery'?4:2);const lastExit=Math.max(0,...t.rows.flatMap(r=>r.items.map(([k])=>r.d+shape(k).length)));this.nextPattern=Math.max(20,lastExit+8-(this.group===1?12:0))/this.speed;this.patternHistory.push(t.name);if(this.patternHistory.length>24)this.patternHistory.shift();this.emit('pattern',{name:t.name,safe,group:this.group,phase});
  }
- streetVariant(kind,t){if(this.state===STATES.TUTORIAL)return kind;if(kind==='cone'&&this.group===3)return 'plunger';if(kind==='vehicle'||(kind==='bus'&&(this.group===1||this.group%4===0)&&!t.rows.some(r=>r.items.some(([k])=>k==='ramp'||k==='roof'))))return 'falcon';if(kind==='gap')return this.group%2?'pothole':'gap';if(kind==='trash'&&this.group%2===0)return 'donkey';return kind;}
- hygieneVariant(kind,template){if(this.state===STATES.TUTORIAL||this.group%3!==0||template?.rows.some(r=>r.items.some(([k])=>k==='ramp'||k==='roof')))return kind;return {trash:this.group%2?'brush':'shampoo',cone:'plunger',low:'soap',bus:this.group>4?'portable':'bus'}[kind]||kind;}
- pickup(o){super.pickup(o,this.state===STATES.TUTORIAL?5.5:2.5);}
- collide(o){if(this.state===STATES.TUTORIAL){this.tutorialMiss=true;o.resolved=true;this.grace=.4;this.emit('stumble',{kind:o.kind,tutorial:true});return;}
+ streetVariant(kind,t){if(kind==='cone'&&this.group===3)return 'plunger';if(kind==='vehicle'||(kind==='bus'&&(this.group===1||this.group%4===0)&&!t.rows.some(r=>r.items.some(([k])=>k==='ramp'||k==='roof'))))return 'falcon';if(kind==='gap')return this.group%2?'pothole':'gap';if(kind==='trash'&&this.group%2===0)return 'donkey';return kind;}
+ hygieneVariant(kind,template){if(this.group%3!==0||template?.rows.some(r=>r.items.some(([k])=>k==='ramp'||k==='roof')))return kind;return {trash:this.group%2?'brush':'shampoo',cone:'plunger',low:'soap',bus:this.group>4?'portable':'bus'}[kind]||kind;}
+ pickup(o){super.pickup(o,2.5);}
+ collide(o){
   if(this.grace>0||this.landingSafe>0||o.resolved)return;o.resolved=true;
   if(this.chase.hit()){this.fail('press');return;}
   this.meter=Math.min(100,this.meter+18);this.grace=1.3;this.slow=.65;this.hitStop=.10;this.pickupStreak=0;this.combo=1;this.emit('stumble',{kind:o.kind,lane:o.lane,pressClose:true});if(this.meter>=100)this.fail('meter');
@@ -43,11 +36,11 @@ export class RunnerEngine extends LegacyEngine{
  activate(id){const okay=super.activate(id);if(okay&&id==='rescue'){this.jumpY=this.jumpTime=this.vy=this.groundY=0;for(const o of this.pool.items)if(o.active&&o.kind==='tp'&&o.z<100)o.y=5.5;}return okay;}
  endPower(){const id=this.power;super.endPower();if(id==='rescue'){this.landingSafe=1.8;this.groundY=0;for(const o of this.pool.items)if(o.active&&o.kind==='tp'&&o.y>4)o.active=false;}}
  update(dt){dt=clamp(dt,0,.05);this.presentationScale=1;
-  if(![STATES.RUNNING,STATES.TUTORIAL].includes(this.state)){super.update(dt);return;}
+  if(![STATES.RUNNING].includes(this.state)){super.update(dt);return;}
   this.simTicks++;this.previousDistance=this.distance;this.previousX=this.x;this.previousY=this.jumpY+this.groundY+this.airY;this.previousGroundY=this.groundY;this.previousAirY=this.airY;
   if(this.hitStop>0){this.hitStop=Math.max(0,this.hitStop-dt);this.presentationScale=0;return;}
   if(this.slow>0){this.slow=Math.max(0,this.slow-dt);dt*=.72;this.presentationScale=.72;}
-  this.elapsed+=dt;this.actionAge+=dt;this.nearCooldown=Math.max(0,this.nearCooldown-dt);this.speed=this.state===STATES.TUTORIAL?12:Math.min(34,18+this.elapsed*.10);this.distance+=this.speed*dt;this.score+=this.speed*dt*(this.power==='dollars'?2:1);
+  this.elapsed+=dt;this.actionAge+=dt;this.nearCooldown=Math.max(0,this.nearCooldown-dt);this.speed=Math.min(34,18+this.elapsed*.10);this.distance+=this.speed*dt;this.score+=this.speed*dt*(this.power==='dollars'?2:1);
   this.laneTime=Math.min(.16,this.laneTime+dt);const t=this.laneTime/.16;this.x=this.laneFrom+(this.lane-this.laneFrom)*(1-(1-t)**3);if(t>=1)this.x=this.lane;
   this.grace=Math.max(0,this.grace-dt);this.landingSafe=Math.max(0,this.landingSafe-dt);this.slideTime=Math.max(0,this.slideTime-dt);
   const objects=this.pool.items;for(const o of objects)if(o.active){o.prevZ=o.z;o.z-=this.speed*dt;}
@@ -62,7 +55,7 @@ export class RunnerEngine extends LegacyEngine{
   if(this.jumpY===0&&this.vy===0&&nextGround<=this.groundY+.24)this.groundY=nextGround;
   if(this.bufferTime>0){this.bufferTime-=dt;if(this.jumpY===0&&this.slideTime===0){const action=this.buffer;this.bufferTime=0;this.input(action);}}
   if(this.state===STATES.RUNNING)this.chase.update(dt,this);
-  if(this.state===STATES.TUTORIAL)this.tutorial(dt);else{this.meter=Math.min(100,this.meter+(2.6+Math.min(2.6,this.elapsed*.016))*dt*(this.power==='lion'?.08:1));if(this.meter>97)this.wasCritical=true;if(this.meter>=100){this.fail('meter');return;}this.nextPattern-=dt;if(this.nextPattern<=0)this.pattern();this.powerGap-=dt;if(this.powerGap<=0&&!this.power){const ids=['magnet','lion','afuera','dollars','rescue'];const id=this.firstPowerSpawned?ids[Math.max(0,this.powerCount-1)%5]:'rescue';const spawned=this.spawn('power',this.lastSafe,this.firstPowerSpawned?80:42,0,id);if(spawned){this.firstPowerSpawned=true;this.emit('powerSpawn',{id});}this.powerGap=18+this.random()*6;}}
+  {this.meter=Math.min(100,this.meter+(2.6+Math.min(2.6,this.elapsed*.016))*dt*(this.power==='lion'?.08:1));if(this.meter>97)this.wasCritical=true;if(this.meter>=100){this.fail('meter');return;}this.nextPattern-=dt;if(this.nextPattern<=0)this.pattern();this.powerGap-=dt;if(this.powerGap<=0&&!this.power){const ids=['magnet','lion','afuera','dollars','rescue'];const id=this.firstPowerSpawned?ids[Math.max(0,this.powerCount-1)%5]:'rescue';const spawned=this.spawn('power',this.lastSafe,this.firstPowerSpawned?80:42,0,id);if(spawned){this.firstPowerSpawned=true;this.emit('powerSpawn',{id});}this.powerGap=18+this.random()*6;}}
   if(this.power){this.powerTime=Math.max(0,this.powerTime-dt);if(this.power==='rescue'){const sec=Math.ceil(this.powerTime);if(sec<=3&&sec!==this.rescueWarning){this.rescueWarning=sec;this.emit('rescueWarning',{seconds:sec});}}if(this.powerTime===0)this.endPower();}
   this.airY+=((this.power==='rescue'?5:0)-this.airY)*Math.min(1,dt*4.5);const feet=this.groundY+this.jumpY+this.airY;
   for(const o of objects){if(!o.active)continue;
@@ -70,7 +63,7 @@ export class RunnerEngine extends LegacyEngine{
    if(this.power==='afuera'&&BREAKABLE.has(o.kind)&&Math.abs(o.lane-this.x)<.4&&o.z<15&&o.z>0){this.destroy(o);continue;}
    if(['tp','dollar','power'].includes(o.kind)){if(o.z<1&&o.z>-.9&&Math.abs(o.lane-this.x)<.44&&(o.kind==='power'||Math.abs(o.y-(feet+.65))<1.05))this.pickup(o);}
    else if(o.kind==='newspapers'&&!o.resolved&&o.z<=.42&&o.prevZ>.42&&Math.abs(o.lane-this.x)<.7){o.resolved=true;this.emit('news',{lane:o.lane});this.chase.react('news');}
-   else if(!o.resolved&&this.airY<.7&&!(o.kind==='bus'&&(o.roofVisited||this.groundY===2.8&&feet>=2.72))&&sweptContact(o,this.previousX,this.x,this.previousY,feet,this.slideTime>0&&this.slideTime<=.62)){if(this.power==='lion'&&BREAKABLE.has(o.kind)){this.destroy(o);continue;}if(this.grace<=0&&this.landingSafe<=0){this.collide(o);if(this.state===STATES.IMPACT)return;}o.resolved=true;}
+   else if(!o.resolved&&this.airY<.7&&!(o.kind==='bus'&&(o.roofVisited||this.groundY===2.8&&feet>=2.72))&&sweptContact(o,this.previousX,this.x,this.previousY,feet,this.slideTime>0&&this.slideTime<=.62&&this.power!=='lion')){if(this.power==='lion'&&BREAKABLE.has(o.kind)){this.destroy(o);continue;}if(this.grace<=0&&this.landingSafe<=0){this.collide(o);if(this.state===STATES.IMPACT)return;}o.resolved=true;}
    if(!o.resolved&&o.prevZ+o.length>0&&o.z+o.length<=0){o.resolved=true;const edge=Math.abs(o.lane-this.x)*3.2-shape(o.kind).width/2-.32;if(this.state===STATES.RUNNING&&this.nearCooldown===0&&edge>0&&edge<.18&&this.elapsed-this.lastActionTime<.35){this.score+=75*this.combo;this.nearCooldown=4;this.emit('near');}}
    if(o.z+o.length<-8)o.active=false;
   }
