@@ -1,8 +1,8 @@
 {
   "version": 4,
-  "circus": "v4/circus-calliope.mp3",
-  "gameOver": "v3/mobile/game_over.mp3",
-  "intro": "v3/mobile/intro.mp3",
+  "circus": "v5/silly-serenade-loop.mp3",
+  "gameOver": "v5/game-over-cat.mp3",
+  "intro": "v5/intro-comedy.mp3",
   "effects": {
     "jump": "v3/mobile/jump.mp3",
     "land": "v3/mobile/land.mp3",
