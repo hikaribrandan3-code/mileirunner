@@ -33,7 +33,7 @@ for(const b of all('[data-difficulty]'))b.addEventListener('click',()=>{prefs.di
 difficultyUI();
 const selector=new CharacterSelector($('#characters'),{progress:engine.progress,prefs,onPlay:async index=>{const version=++launchVersion;void audio.unlock();const chosen=await chooseCharacter(index);if(!chosen||dead||version!==launchVersion||screen!=='characters')return;await run(version);}});
 function characterPortraits(){const c=characterAt(prefs.character),src='../art/selector-'+c.id+'-portrait-v1.webp';for(const image of all('#meter-face,.pause-hero')){image.src=src;image.alt=c.short;}game.dataset.character=c.id;}
-async function selectedArt(index=prefs.character){const c=characterAt(index);await Promise.all([...c.intro,c.result,c.portrait].filter(id=>!assets[id]).map(load));if(c.intro.some(id=>!assets[id]))throw Error('Character intro unavailable: '+c.id);}
+async function selectedArt(index=prefs.character){const c=characterAt(index),required=[...c.intro,...(index===0?['stage']:[])];await Promise.all([...required,c.result,c.portrait].filter(id=>!assets[id]).map(load));if(required.some(id=>!assets[id]))throw Error('Character intro unavailable: '+c.id);}
 async function chooseCharacter(index){
  if(selecting||!isUnlocked(engine.progress,index))return false;
  selecting=true;const prior=prefs.character;characters();

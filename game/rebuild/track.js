@@ -37,12 +37,12 @@ export function shape(kind){return SHAPES[kind]||{width:.7,height:.7,length:.7};
 export function supportAt(objects,x,zOffset=0){let ground=0;for(const o of objects){if(!o.active||Math.abs(o.lane-x)*LANE_WIDTH>1.3)continue;const s=shape(o.kind),z=o.z+zOffset;if(z>(o.kind==='ramp'?0:.42)||z+s.length<0)continue;if(o.kind==='ramp')ground=Math.max(ground,Math.min(2.8,(-z/12)*2.8));else if(o.kind==='roof'||o.kind==='bus')ground=Math.max(ground,2.8);}return ground;}
 export function contacts(o,x,feet,sliding){const s=shape(o.kind);if(Math.abs(o.lane-x)*LANE_WIDTH>s.width/2+.32)return false;if(o.z>.42||o.z+s.length<-.42)return false;if(['ramp','roof','newspapers'].includes(o.kind))return false;if(['gap','pothole','manhole','trench'].includes(o.kind))return feet<.25;if(['high','mics'].includes(o.kind))return !sliding&&feet+HERO_HEIGHT>s.bottom&&feet<s.height;return feet<s.height-.08;}
 // Exact linear sweep over the fixed tick: clip the common contact-time interval.
-export function sweptContact(o,previousX,x,previousFeet,feet,sliding){
+export function sweptContact(o,previousX,x,previousFeet,feet,sliding,heroHeight=HERO_HEIGHT){
  if(['ramp','roof','newspapers'].includes(o.kind))return false;const s=shape(o.kind);let lo=0,hi=1;
  const clip=(a,b,min,max)=>{const delta=b-a;if(Math.abs(delta)<1e-9)return a>=min&&a<=max;let u=(min-a)/delta,v=(max-a)/delta;if(u>v)[u,v]=[v,u];lo=Math.max(lo,u);hi=Math.min(hi,v);return lo<=hi;};
  const half=(s.width/2+.32)/LANE_WIDTH;
  if(!clip(previousX,x,o.lane-half,o.lane+half)||!clip(o.prevZ??o.z,o.z,-s.length-.42,.42))return false;
- if(['high','mics'].includes(o.kind))return !sliding&&clip(previousFeet,feet,s.bottom-HERO_HEIGHT,s.height);
+ if(['high','mics'].includes(o.kind))return !sliding&&clip(previousFeet,feet,s.bottom-heroHeight,s.height);
  return clip(previousFeet,feet,-Infinity,['gap','pothole','manhole','trench'].includes(o.kind)?.25:s.height-.08);
 }
 // Beam search over timed actions uses the same continuous contact/support model.

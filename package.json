@@ -1,0 +1,10 @@
+{
+  "name": "diaper-boyz-world-tour",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check-production.mjs",
+    "test": "node --test scripts/production-review.test.mjs",
+    "audit": "node scripts/run-production-audit.cjs"
+  }
+}

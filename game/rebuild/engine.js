@@ -3,14 +3,14 @@ import {difficultyAt,SHOWCASE,chooseRandomPower} from './difficulty.js';
 import {PressChase} from './chase.js';
 import {TEMPLATES,shape,supportAt,sweptContact} from './track.js';
 import {BONUS_POWERS,characterAt,awardCharacters,BIG_HEAD,SMASH,PROTECTED,FLIGHT} from './characters.js';
+import {BREAKABLE,VEHICLES,clearsAhead,PAPER_STORM_INTERVAL} from './power-rules.js';
+import {PAPER_RELIEF,fillRate} from './pressure.js';
 export {STATES,QUOTES,meterBand};
 export const POWERS=Object.freeze([...LEGACY_POWERS,...BONUS_POWERS]);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const BREAKABLE=new Set(['skip','cone','low','block','trash','shampoo','soap','plunger','brush','bags','doublebarrier','camera']);
-const VEHICLES=new Set(['bus','falcon','taxi','vehicle']);
 export class RunnerEngine extends LegacyEngine{
- reset(){super.reset();this.tuning=difficultyAt(this.difficulty);this.chase=new PressChase((type,details)=>this.emit(type,details),this.tuning);this.speed=this.tuning.start;this.meter=this.tuning.meterStart;this.activationSafe=0;this.groundY=0;this.previousGroundY=0;this.previousAirY=0;this.vy=0;this.fastFall=false;this.laneFrom=0;this.laneTime=.16;this.actionAge=0;this.nearCooldown=0;this.lastTemplate=-1;this.patternHistory=[];this.inputHistory=[];this.previousDistance=0;this.previousX=0;this.previousY=0;this.presentationScale=1;this.nextPattern=.1;this.powerGap=5.8;this.firstPowerSpawned=false;this.jumpTime=0;this.airY=0;this.runSeed=this.seed;this.powerAge=0;this.powerSpawnIndex=0;this.unlockedThisRun=[];}
- spawn(...args){const o=super.spawn(...args);if(o){o.resolved=false;o.roofReward=false;o.length=shape(o.kind).length;}return o;}
+ reset(){super.reset();this.tuning=difficultyAt(this.difficulty);this.chase=new PressChase((type,details)=>this.emit(type,details),this.tuning);this.speed=this.tuning.start;this.meter=this.tuning.meterStart;this.activationSafe=0;this.groundY=0;this.previousGroundY=0;this.previousAirY=0;this.vy=0;this.fastFall=false;this.laneFrom=0;this.laneTime=.16;this.actionAge=0;this.nearCooldown=0;this.lastTemplate=-1;this.patternHistory=[];this.inputHistory=[];this.previousDistance=0;this.previousX=0;this.previousY=0;this.presentationScale=1;this.nextPattern=.1;this.powerGap=5.8;this.firstPowerSpawned=false;this.jumpTime=0;this.airY=0;this.runSeed=this.seed;this.powerAge=0;this.paperPulseTime=0;this.powerSpawnIndex=0;this.unlockedThisRun=[];}
+ spawn(...args){const o=super.spawn(...args);if(o){o.resolved=false;o.roofReward=false;o.roofVisited=false;o.length=shape(o.kind).length;}return o;}
  // Every deliberate Play starts the selected runner's complete story.
  start({restart=false}={}){this.endPower();this.reset();this.restarting=restart;this.state=restart?STATES.RESTART:STATES.INTRO;this.emit('start',{state:this.state});}
  handoff(){super.handoff();if(this.state===STATES.RUNNING)this.pattern();}
@@ -36,7 +36,7 @@ export class RunnerEngine extends LegacyEngine{
   for(const o of hazards)if(o.lane===lane&&o.z<z+this.speed*.5&&o.z+o.length>z-this.speed*1.1)o.active=false;
   this.trail(lane,Math.max(3,z-9),3);return lane;
  }
- pickup(o){super.pickup(o,2.5);}
+ pickup(o){super.pickup(o,PAPER_RELIEF);}
  collide(o){
   if(PROTECTED.has(this.power)){o.resolved=true;this.emit('deflect',{kind:o.kind,lane:o.lane,power:this.power});return;}
   if(o.resolved||this.grace>0||this.activationSafe>0||this.landingSafe>0){o.resolved=true;return;}o.resolved=true;
@@ -44,7 +44,7 @@ export class RunnerEngine extends LegacyEngine{
   this.meter=Math.min(100,this.meter+this.tuning.hit);this.grace=this.tuning.chainGrace;this.slow=.65;this.hitStop=.10;this.pickupStreak=0;this.combo=1;this.emit('stumble',{kind:o.kind,lane:o.lane,pressClose:this.elapsed>=this.tuning.chaseAt,penalty:this.tuning.hit});if(this.meter>=100)this.fail('meter');
  }
  emit(type,details={}){super.emit(type,details);if(this.chase){if(type==='near')this.chase.react('near');if(type==='power'&&(FLIGHT.has(details.id)||['rescue','maga','victim','speech','burger'].includes(details.id)||SMASH.has(details.id)))this.chase.react(FLIGHT.has(details.id)?'rescue':'lion');if(type==='pressEscape')this.chase.react('escape');}}
- activate(id){if(this.power)return false;this.powerAge=0;let okay;if(BONUS_POWERS.some(p=>p.id===id)){if(this.power)return false;this.power=id;this.powerTime=BONUS_POWERS.find(p=>p.id===id).duration;this.powerWarning=3;this.powerCombo=1;this.powerPayout=0;this.lastPower=id;this.powerCount++;this.hitStop=.07;this.meter=Math.max(0,this.meter-3);this.emit('power',{id});okay=true;}else okay=super.activate(id);if(okay){this.activationSafe=.65;}if(okay&&FLIGHT.has(id)){this.airY=.05;this.slideTime=0;this.rescueWarning=4;for(let j=0;j<4;j++)this.trail((j%3)-1,15+j*23,4);this.jumpY=this.jumpTime=this.vy=this.groundY=0;for(const o of this.pool.items)if(o.active&&o.kind==='tp'&&o.z<100)o.y=5.5;}return okay;}
+ activate(id){if(this.power)return false;this.powerAge=0;this.paperPulseTime=0;let okay;if(BONUS_POWERS.some(p=>p.id===id)){if(this.power)return false;this.power=id;this.powerTime=BONUS_POWERS.find(p=>p.id===id).duration;this.powerWarning=3;this.powerCombo=1;this.powerPayout=0;this.lastPower=id;this.powerCount++;this.hitStop=.07;this.meter=Math.max(0,this.meter-3);this.emit('power',{id});okay=true;}else okay=super.activate(id);if(okay){this.activationSafe=.65;if(id==='presspanic'&&this.chase.live){this.chase.gap=7.8;this.chase.react('escape');}}if(okay&&FLIGHT.has(id)){this.airY=.05;this.slideTime=0;this.rescueWarning=4;if(id!=='rescue')for(let j=0;j<4;j++)this.trail((j%3)-1,15+j*23,4);this.jumpY=this.jumpTime=this.vy=this.groundY=0;for(const o of this.pool.items)if(o.active&&o.kind==='tp'&&o.z<100)o.y=5.5;}return okay;}
  endPower(){const id=this.power;super.endPower();if(FLIGHT.has(id)){this.landingSafe=3;this.grace=Math.max(this.grace,1);this.groundY=0;for(const o of this.pool.items)if(o.active&&!['tp','dollar','power'].includes(o.kind)&&o.z<this.speed*3+12)o.active=false;if(id!=='rescue')this.emit('landing');for(const o of this.pool.items)if(o.active&&o.kind==='tp'&&o.y>4)o.active=false;}}
  update(dt){dt=clamp(dt,0,.05);this.presentationScale=1;
   if(![STATES.RUNNING].includes(this.state)){super.update(dt);return;}
@@ -66,18 +66,19 @@ export class RunnerEngine extends LegacyEngine{
   if(this.jumpY===0&&this.vy===0&&nextGround<=this.groundY+.24)this.groundY=nextGround;
   if(this.bufferTime>0){this.bufferTime-=dt;if(this.jumpY===0&&this.slideTime===0){const action=this.buffer;this.bufferTime=0;this.input(action);}}
   if(this.state===STATES.RUNNING)this.chase.update(dt,this);
-  {this.meter=Math.min(100,this.meter+(this.tuning.meterRate+Math.min(this.tuning.meterExtra,this.elapsed*this.tuning.meterRamp))*dt*(SMASH.has(this.power)?.08:1));if(this.meter>97)this.wasCritical=true;if(this.meter>=100){this.fail('meter');return;}this.nextPattern-=dt;if(this.nextPattern<=0)this.pattern();this.powerGap-=dt;if(this.powerGap<=0&&!this.power){const c=characterAt(this.characterIndex||0),kit=SHOWCASE[c.id];let id;
+  {this.meter=Math.min(100,this.meter+fillRate(this.tuning,this.elapsed,this.power)*dt);if(this.meter>97)this.wasCritical=true;if(this.meter>=100){this.fail('meter');return;}this.nextPattern-=dt;if(this.nextPattern<=0)this.pattern();this.powerGap-=dt;if(this.powerGap<=0&&!this.power){const c=characterAt(this.characterIndex||0),kit=SHOWCASE[c.id];let id;
    if(this.powerSpawnIndex<kit.length)id=kit[this.powerSpawnIndex];else id=chooseRandomPower(c,this.lastPower,()=>this.random());
    const lead=this.firstPowerSpawned?this.speed*2.2:this.speed*.9;const lane=this.powerLane(lead);const spawned=this.spawn('power',lane,lead,0,id);
    if(spawned){this.powerSpawnIndex++;this.firstPowerSpawned=true;this.emit('powerSpawn',{id});}this.powerGap=this.tuning.powerMin+this.random()*(this.tuning.powerMax-this.tuning.powerMin);}}
-  if(this.power){this.powerAge+=dt;this.powerTime=Math.max(0,this.powerTime-dt);if(FLIGHT.has(this.power)){const sec=Math.ceil(this.powerTime);if(sec<=3&&sec!==this.rescueWarning){this.rescueWarning=sec;this.emit('rescueWarning',{seconds:sec});}}if(this.powerTime===0)this.endPower();}
+  if(this.power){this.powerAge+=dt;this.powerTime=Math.max(0,this.powerTime-dt);if(FLIGHT.has(this.power)){const sec=Math.ceil(this.powerTime);if(sec<=3&&sec!==this.rescueWarning){this.rescueWarning=sec;this.emit('rescueWarning',{seconds:sec});}}else if(this.powerTime<=2&&this.powerWarning>0){this.powerWarning=0;this.emit('powerWarning');}if(this.powerTime===0)this.endPower();}
   this.airY+=((FLIGHT.has(this.power)?5:0)-this.airY)*Math.min(1,dt*4.5);const feet=this.groundY+this.jumpY+this.airY;
+  let paperPulse=false;if(this.power==='presspanic'){this.paperPulseTime-=dt;if(this.paperPulseTime<=0){this.paperPulseTime+=PAPER_STORM_INTERVAL;paperPulse=true;this.emit('paperStorm');}}
   for(const o of objects){if(!o.active)continue;
    if(o.kind==='tp'&&this.power==='magnet'&&o.z<30&&o.z>-.5&&Math.abs(o.y-feet)<3.5){o.pull+=dt;o.lane+=(this.x-o.lane)*Math.min(1,dt*9);o.y+=(feet+.7-o.y)*Math.min(1,dt*7);o.z-=dt*26;}
-   if((this.power==='afuera'&&BREAKABLE.has(o.kind)||['speech','presspanic'].includes(this.power)&&[...BREAKABLE,...VEHICLES,'high','mics'].includes(o.kind))&&Math.abs(o.lane-this.x)<.4&&o.z<15&&o.z>0){this.destroy(o);continue;}
+   if(clearsAhead(this.power,o,this.x,paperPulse)){this.destroy(o);continue;}
    if(['tp','dollar','power'].includes(o.kind)){if(o.z<1&&o.z>-.9&&Math.abs(o.lane-this.x)<.44&&(o.kind==='power'||Math.abs(o.y-(feet+.65))<1.05))this.pickup(o);}
    else if(o.kind==='newspapers'&&!o.resolved&&o.z<=.42&&o.prevZ>.42&&Math.abs(o.lane-this.x)<.7){o.resolved=true;this.emit('news',{lane:o.lane});this.chase.react('news');}
-   else if(!o.resolved&&this.airY<.7&&sweptContact(o,this.previousX,this.x,this.previousY,feet,this.slideTime>0&&this.slideTime<=.62&&!BIG_HEAD.has(this.power))){if(SMASH.has(this.power)&&(BREAKABLE.has(o.kind)||this.power==='burger'&&VEHICLES.has(o.kind))){this.destroy(o);continue;}this.collide(o);if(this.state===STATES.IMPACT)return;o.resolved=true;}
+   else if(!o.resolved&&this.airY<.7&&sweptContact(o,this.previousX,this.x,this.previousY,feet,this.slideTime>0&&this.slideTime<=.62&&!BIG_HEAD.has(this.power),this.power==='chicken'?1.05:undefined)){if(SMASH.has(this.power)&&(BREAKABLE.has(o.kind)||this.power==='burger'&&VEHICLES.has(o.kind))){this.destroy(o);continue;}this.collide(o);if(this.state===STATES.IMPACT)return;o.resolved=true;}
    if(!o.resolved&&o.prevZ+o.length>0&&o.z+o.length<=0){o.resolved=true;const edge=Math.abs(o.lane-this.x)*3.2-shape(o.kind).width/2-.32;if(this.state===STATES.RUNNING&&this.nearCooldown===0&&edge>0&&edge<.18&&this.elapsed-this.lastActionTime<.35){this.score+=75*this.combo;this.nearCooldown=4;this.emit('near');}}
    if(o.z+o.length<-8)o.active=false;
   }

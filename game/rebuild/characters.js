@@ -27,7 +27,7 @@ export const BONUS_POWERS=Object.freeze([
  {id:'chosen',name:'THE CHOSEN FLIGHT',duration:7,color:'#ffe18a',icon:'✦',family:'flight'},
  {id:'chicken',name:'CHICKEN HEAD',duration:7,color:'#ffc249',icon:'🐔',family:'smallhead'},
  {id:'bigben',name:'BIG BEN MODE',duration:7,color:'#ffce4f',icon:'😳',family:'smash'},
- {id:'presspanic',name:'PRESS PANIC',duration:6,color:'#42dcc9',icon:'📄',family:'lane'},
+ {id:'presspanic',name:'PAPER STORM',duration:6,color:'#42dcc9',icon:'📄',family:'storm'},
  {id:'chickenflight',name:'CLUCK AIRLINES',duration:7,color:'#fff3a2',icon:'🪽',family:'flight'}
 ]);
 export const BIG_HEAD=new Set(['lion','ham','bibi','bigben']);
