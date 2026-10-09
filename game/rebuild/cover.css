@@ -1,0 +1,37 @@
+/* World Tour cover: artwork is decorative; every control remains native UI. */
+#menu{isolation:isolate;background:#137bc8;contain:layout paint}
+#menu::after{display:none}
+#menu .tour-poster{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center top;pointer-events:none}
+#menu .tour-logo{position:absolute;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#menu .menu-wallet,#menu .brand-pill,#menu .edition,#menu .quiet{display:none}
+#menu .menu-wallet{position:absolute;z-index:3;top:max(10px,env(safe-area-inset-top));left:68px;right:auto;transform:none;display:flex;padding:0;width:auto;pointer-events:none}
+#menu .menu-wallet>span:first-child{display:none}
+#menu .menu-wallet>span:last-child{padding:5px 11px;border:1px solid #9fdfff;border-radius:14px;background:#09253ee8;box-shadow:0 2px #04182c;color:#fff8e6;font:17px/1 Diaper,Arial,sans-serif;text-shadow:none}
+#menu .menu-toolbar{position:absolute;inset:0 0 auto;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:max(10px,env(safe-area-inset-top)) 12px 0;pointer-events:none}
+#menu .menu-toolbar .square{pointer-events:auto;width:46px;min-width:46px;height:46px;border:3px solid #061b34;border-radius:15px;background:linear-gradient(#75e3ff,#168de6 58%,#0067bf);box-shadow:inset 0 0 0 2px #c9f7ff,0 4px #06192c;font-size:34px;text-shadow:0 3px #063868;display:grid;place-items:center;padding:0;line-height:1}
+#menu .parody-paper{position:absolute;z-index:3;top:calc(max(10px,env(safe-area-inset-top)) + 55px);right:14px;width:42px;height:38px;display:grid;place-items:center;padding:5px;border:2px solid #071a30;border-radius:12px;background:linear-gradient(#697b8e,#26384b 60%,#17273a);box-shadow:inset 0 0 0 2px #a0b3c3,0 3px #06172d;color:#fff9e9}
+#menu .parody-paper svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+#menu .menu-bottom{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:stretch;left:3%;right:3%;width:94%;bottom:max(14px,env(safe-area-inset-bottom));gap:11px;background:none;padding:0}
+#menu .menu-bottom>.primary{position:static;align-self:center;width:90%;min-height:46px;padding:8px 12px;gap:10px;border:3px solid #061b34;border-radius:24px;font-size:24px;line-height:1;background:linear-gradient(#fff56b,#ffcc22 60%,#ffab0e);box-shadow:inset 0 0 0 2px #fff7bd,0 5px #051b32,0 7px 9px #04182e55}
+#menu .menu-bottom>.primary .play-symbol{font-size:27px;text-shadow:1px 3px #8d3c13}
+#menu .menu-grid{position:static;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:6px;padding:0}
+#menu .menu-grid button{min-height:66px;padding:8px 1px;border:3px solid #061b34;border-radius:17px;box-shadow:inset 0 0 0 2px var(--clay-rim),inset 0 -4px #00000013,0 4px #051a31}
+#menu .menu-grid span{height:27px}
+#menu .menu-grid svg{width:27px;height:27px;stroke-width:2.5}
+#menu .menu-grid b{font:12px/1.1 Diaper,Arial,sans-serif;letter-spacing:0;margin-top:5px;text-shadow:none}
+#menu .menu-grid button::before{display:none}
+#menu .menu-grid button:active{transform:translateY(3px)}
+#disclaimer{z-index:25;background:#06172dc9;backdrop-filter:blur(7px)}
+.parody-sheet{position:relative;width:min(90%,390px);max-height:88dvh;overflow:auto;padding:27px 23px 21px;border:8px solid transparent;border-radius:10px;background:linear-gradient(#f7e8c8,#f3dfb7) padding-box,repeating-linear-gradient(135deg,#c84c45 0 9px,#f5ead0 9px 18px,#315d84 18px 27px,#f5ead0 27px 36px) border-box;box-shadow:0 9px 25px #0009;color:#171510}
+.parody-close{position:absolute;top:8px;right:8px;width:38px;min-width:38px;height:38px;border:2px solid #fff3d4;background:linear-gradient(#ff7262,#d7272d);font-size:27px}
+.parody-stamp{margin:0 50px 15px 0;padding:7px 9px;border:1px dashed #866d48;border-radius:7px;color:#5a6b75;font:900 10px Arial;letter-spacing:1px;text-align:center;transform:rotate(-3deg)}
+.parody-sheet h2{margin:7px 0 17px;color:#19150e;font:900 clamp(31px,9vw,44px)/.94 Diaper,Arial,sans-serif;text-align:center;transform:rotate(-2deg)}
+.parody-sheet h2 strong{font-size:1.3em;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
+.parody-sheet p{margin:12px 0;color:#211e17;font:500 15px/1.42 Arial,sans-serif}
+.parody-note{margin:17px 0;padding:13px 10px;border-top:2px solid #3b3122;border-bottom:2px solid #3b3122;text-align:center;font:900 15px/1.35 Diaper,Arial,sans-serif;transform:rotate(1deg)}
+.parody-note b{display:inline-block;margin-top:7px;padding:6px 10px;background:#f4d53b;color:#15130e;font-size:19px;transform:rotate(-2deg)}
+.parody-ok{width:100%;min-height:51px;font-size:22px}
+
+@media(max-width:350px){#menu .menu-grid b{font-size:10px}#menu .menu-grid button{min-height:60px}#menu .menu-bottom>.primary{font-size:21px}}
+@media(max-height:700px){#menu .menu-bottom{bottom:max(12px,env(safe-area-inset-bottom));gap:9px}#menu .menu-grid button{min-height:60px}#menu .menu-bottom>.primary{min-height:43px;font-size:22px}.parody-sheet{max-height:94dvh;padding:19px 18px 15px}.parody-sheet p{font-size:13px;margin:8px 0}.parody-note{margin:10px 0;padding:9px}}
+@media(orientation:landscape){#menu .tour-poster{width:56%;object-position:center 30%}#menu .menu-bottom{left:auto;right:3%;width:40%;bottom:20px}#menu .menu-grid b{font-size:10px}#menu .menu-toolbar{padding:10px 12px}#menu .parody-paper{top:65px}}

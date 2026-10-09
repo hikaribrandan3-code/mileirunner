@@ -1,8 +1,8 @@
 {
-  "version": 4,
+  "version": 8,
   "circus": "v5/silly-serenade-loop.mp3",
+  "introComedy": "v5/intro-comedy.mp3",
   "gameOver": "v5/game-over-cat.mp3",
-  "intro": "v5/intro-comedy.mp3",
   "effects": {
     "jump": "v3/mobile/jump.mp3",
     "land": "v3/mobile/land.mp3",
@@ -30,14 +30,30 @@
     "whistle": "kit/whistle.mp3",
     "horn": "kit/traffic_horn.mp3",
     "groupLaugh": "kit/laugh_group.mp3",
-    "roastLaugh": "kit/laugh_roast.mp3"
+    "roastLaugh": "kit/laugh_roast.mp3",
+    "realization": "v6/realization-oh-fuck.mp3",
+    "chaseShout": "v6/press-chase-chant.mp3",
+    "escapeFootsteps": "v7/escape-footsteps.mp3",
+    "speechMilei": "v8/milei-blah.mp3",
+    "speechTrump": "v8/trump-oink.mp3",
+    "speechBibi": "v8/bibi-gibberish.mp3",
+    "speechBen": "v8/ben-chicken.mp3"
   },
   "loops": {
     "magnet": "v3/mobile/magnet.mp3",
     "lion": "v3/mobile/lion.mp3",
     "afuera": "kit/chainsaw_loop.mp3",
     "dollars": "v3/mobile/dollars.mp3",
-    "rescue": "kit/helicopter_loop.mp3"
+    "rescue": "kit/helicopter_loop.mp3",
+    "stream": "v6/stream-loop.mp3"
   },
-  "license": "Original generated synthesis and local SFX kit; no third-party recordings"
+  "license": "Existing original synthesis/SFX kit plus user-supplied music and scene recordings; source provenance in userProvidedAudio.",
+  "menuComedy": "v8/menu-comedy-loop.mp3",
+  "userProvidedAudio": {
+    "menuComedy": "oceanframemusic-free-comedy-music-474555.mp3",
+    "speechMilei": "scottishperson-sound-effect-blah-blah-blah-239796.mp3",
+    "speechTrump": "kuzu420-oink-oink-228771 (1).mp3",
+    "speechBibi": "sdking79-man-talking-unintelligibly-3-546036.mp3",
+    "speechBen": "dragon-studio-chicken-sounds-487676.mp3"
+  }
 }

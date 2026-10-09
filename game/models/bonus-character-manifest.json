@@ -1,0 +1,23 @@
+[
+  {
+    "id": "trump-pig",
+    "bones": 24,
+    "vertices": 5944,
+    "faces": 5185,
+    "bytes": 690732
+  },
+  {
+    "id": "bibi-bibi",
+    "bones": 27,
+    "vertices": 6811,
+    "faces": 5839,
+    "bytes": 2446256
+  },
+  {
+    "id": "ben-gvir",
+    "bones": 24,
+    "vertices": 5664,
+    "faces": 4913,
+    "bytes": 1868404
+  }
+]

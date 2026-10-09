@@ -117,3 +117,42 @@
 #menu .menu-grid b{font-family:Diaper,Arial,sans-serif;font-size:10px;letter-spacing:.15px;margin-top:5px;text-shadow:0 1px #0002}
 #menu .menu-grid button:active{transform:translateY(3px);background:linear-gradient(var(--clay-mid),var(--clay-base));box-shadow:inset 0 0 0 2px var(--clay-rim),0 1px 0 #04172c}
 @media(max-height:650px){#menu .menu-grid button{min-height:62px;padding:7px 2px;border-radius:16px}#menu .menu-grid span{height:25px}#menu .menu-grid svg{width:25px;height:25px}#menu .menu-grid b{font-size:9px;margin-top:4px}}
+
+/* World Tour loading art with a live progress bar driven by the real boot gate. */
+#boot{align-items:center;justify-content:flex-end;overflow:hidden;isolation:isolate;color:#fff;font-family:Diaper,Arial,sans-serif;background:#031735}
+.loader-background{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:-1;pointer-events:none}
+@media(min-aspect-ratio:2/3){.loader-background{object-fit:contain}}
+.loader-progress{position:relative;z-index:1;width:78%;margin:0 0 max(7%,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.loading-track{--load-progress:0%;position:relative;width:100%;height:clamp(38px,9vw,52px);order:0;border:4px solid #071a34;border-radius:30px;background:linear-gradient(90deg,#102f55,#082344);box-shadow:0 0 0 2px #a9d4ff,inset 0 0 0 3px #fff8dd,0 5px 13px #001028c9;overflow:visible}
+.loading-track:before{content:'';position:absolute;inset:6px;border-radius:20px;background:repeating-linear-gradient(130deg,#173e69 0 12px,#0d315b 12px 24px)}
+.loading-fill{position:absolute;inset:6px auto 6px 6px;width:var(--load-progress);max-width:calc(100% - 12px);border-radius:20px;background:repeating-linear-gradient(130deg,#fff36a 0 12px,#ffd32b 12px 23px,#ffb51e 23px 29px);box-shadow:inset 0 2px #fff9ad;transition:width .16s ease-out}
+.loading-roll{position:absolute;left:var(--load-progress);top:50%;z-index:2;display:grid;place-items:center;width:clamp(44px,12vw,60px);height:clamp(44px,12vw,60px);font:clamp(33px,9vw,47px)/1 Arial;filter:drop-shadow(0 3px 2px #061833);transform:translate(-50%,-53%);transition:left .16s ease-out}
+#loading-percent{order:1;color:#f4f8ff;font-size:clamp(31px,9vw,46px);line-height:1.05;text-shadow:0 3px #0756a6,0 5px #071b38}
+#boot-status{order:2;margin:0;color:#80bdff;font-size:clamp(20px,6vw,30px);line-height:1.1;letter-spacing:.03em;text-shadow:0 3px #064080,0 5px #061b38}
+.boot-ready #boot-status{color:#fff7c2}
+@media(max-height:700px){.loader-progress{margin-bottom:max(5%,env(safe-area-inset-bottom));gap:6px}.loading-track{height:38px}#loading-percent{font-size:clamp(26px,7vw,36px)}}
+@media(prefers-reduced-motion:reduce){.loading-fill,.loading-roll{transition:none}}
+
+#cinematic[data-character]:not([data-character=milei]) #intro-stage{width:100%;height:100%;inset:0;object-fit:cover;transform:none;border-radius:0} .character-options{display:grid;grid-template-columns:repeat(2,1fr)}
+
+.unlock-reveal{position:absolute;inset:0;z-index:60;background:radial-gradient(circle at 50% 35%,#167cca,#041b38 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:12px}.unlock-reveal h2{color:#ffe04b;font-size:clamp(30px,8vw,45px)}.unlock-reveal img{max-height:40%;max-width:80%;object-fit:contain;filter:drop-shadow(0 5px 18px #39bfff)}.unlock-reveal h3{font-size:28px;color:white}.unlock-reveal p{font:14px system-ui;color:#c9e6ff}.unlock-reveal button{width:100%}
+/* Results reserve the center for the defeated runner, with compact controls below. */
+#results .results-art{inset:92px 0 263px;background-size:contain;background-position:center;background-repeat:no-repeat}
+#results .results-art:after{display:none}
+#results .result-top{top:max(12px,env(safe-area-inset-top));left:7%;width:86%}
+#results .result-top h2{font-size:43px;line-height:1;margin:6px 0 0;transform:rotate(-3deg)}
+#results .result-top h2 br{display:none}
+#results .result-top h2 em{margin-left:9px}
+#results #new-record{position:absolute;top:54px;right:0;font-size:12px;padding:4px 8px;margin:0}
+#results .result-bottom{bottom:max(10px,env(safe-area-inset-bottom));gap:6px}
+#results blockquote{min-height:0;border-width:2px;padding:5px 9px;font-size:14px;margin:0 0 3px;border-radius:12px;transform:none}
+#results .result-stats{padding:6px 3px}
+#results .result-stats span{display:none}
+#results .result-stats small{font-size:8px;margin-top:0}
+#results .result-stats b{font-size:23px;margin-top:2px}
+#results .result-bottom>.primary{min-height:46px;font-size:25px;padding:7px 12px;border-radius:18px}
+#results .result-characters{min-height:44px;padding:6px 10px;font-size:17px;margin:2px 0 0}
+#results .result-actions button{min-height:44px;padding:7px 6px;font-size:15px;border-radius:14px}
+.pause-hero,#meter-face{object-fit:cover;object-position:center 18%}
+@media(max-height:700px) and (orientation:portrait){#results .results-art{inset:78px 0 243px}#results .result-top h2{font-size:36px}#results blockquote{font-size:12px}#results .result-stats b{font-size:20px}#results .result-bottom{gap:5px}}
+@media(orientation:landscape) and (max-height:500px){#results .results-art{inset:64px 52% 12px 0}#results .result-top{left:1%;width:46%;top:12px}#results .result-top h2{font-size:27px}#results .result-bottom{left:51%;width:47%;bottom:8px}#results .result-bottom>.primary{min-height:44px;font-size:21px}#results .result-actions button{font-size:12px}#results #new-record{top:54px;font-size:10px}}

@@ -19,3 +19,6 @@ export function advancePursuer(m,objects,x,z,speed,dt){
  if(m.y<ground){m.y=ground;m.vy=0;}
  return m;
 }
+
+// Integrate gait speed: multiplying total elapsed time by changing speed causes phase jumps.
+export function advancePursuerPhase(phase,speed,closeness,dt){return (phase+Math.min(15,9+speed*.09+closeness*1.5)*Math.max(0,dt))%(Math.PI*2);}

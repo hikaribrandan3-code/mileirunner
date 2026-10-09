@@ -1,0 +1,54 @@
+[
+  {
+    "id": "milei-character",
+    "customClips": [
+      "rope_hang",
+      "chosen_float",
+      "gas_flight",
+      "chicken_flight",
+      "power_charge",
+      "power_heavy",
+      "speech_run"
+    ],
+    "bytes": 3291120
+  },
+  {
+    "id": "trump-pig",
+    "customClips": [
+      "rope_hang",
+      "chosen_float",
+      "gas_flight",
+      "chicken_flight",
+      "power_charge",
+      "power_heavy",
+      "speech_run"
+    ],
+    "bytes": 769388
+  },
+  {
+    "id": "bibi-bibi",
+    "customClips": [
+      "rope_hang",
+      "chosen_float",
+      "gas_flight",
+      "chicken_flight",
+      "power_charge",
+      "power_heavy",
+      "speech_run"
+    ],
+    "bytes": 2534448
+  },
+  {
+    "id": "ben-gvir",
+    "customClips": [
+      "rope_hang",
+      "chosen_float",
+      "gas_flight",
+      "chicken_flight",
+      "power_charge",
+      "power_heavy",
+      "speech_run"
+    ],
+    "bytes": 1947212
+  }
+]

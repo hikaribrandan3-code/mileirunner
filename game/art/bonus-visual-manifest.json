@@ -1,0 +1,533 @@
+[
+  {
+    "id": "trump-event",
+    "path": "../art/trump-event.webp",
+    "source": "exec-9d141d8a-bcab-4edb-97cf-f3843106d4b3.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 39732,
+    "transparent": false
+  },
+  {
+    "id": "trump-speech",
+    "path": "../art/trump-speech.webp",
+    "source": "exec-9d141d8a-bcab-4edb-97cf-f3843106d4b3.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 41184,
+    "transparent": false
+  },
+  {
+    "id": "trump-realization",
+    "path": "../art/trump-realization.webp",
+    "source": "exec-9d141d8a-bcab-4edb-97cf-f3843106d4b3.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 40104,
+    "transparent": false
+  },
+  {
+    "id": "trump-escape",
+    "path": "../art/trump-escape.webp",
+    "source": "exec-9d141d8a-bcab-4edb-97cf-f3843106d4b3.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 40690,
+    "transparent": false
+  },
+  {
+    "id": "trump-chase",
+    "path": "../art/trump-chase.webp",
+    "source": "exec-9d141d8a-bcab-4edb-97cf-f3843106d4b3.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 59112,
+    "transparent": false
+  },
+  {
+    "id": "trump-over",
+    "path": "../art/trump-over.webp",
+    "source": "exec-9d141d8a-bcab-4edb-97cf-f3843106d4b3.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 50452,
+    "transparent": false
+  },
+  {
+    "id": "bibi-event",
+    "path": "../art/bibi-event.webp",
+    "source": "exec-9d163af7-2770-4122-bbe5-25e58319bc11.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 58408,
+    "transparent": false
+  },
+  {
+    "id": "bibi-speech",
+    "path": "../art/bibi-speech.webp",
+    "source": "exec-9d163af7-2770-4122-bbe5-25e58319bc11.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 44648,
+    "transparent": false
+  },
+  {
+    "id": "bibi-realization",
+    "path": "../art/bibi-realization.webp",
+    "source": "exec-9d163af7-2770-4122-bbe5-25e58319bc11.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 43776,
+    "transparent": false
+  },
+  {
+    "id": "bibi-escape",
+    "path": "../art/bibi-escape.webp",
+    "source": "exec-9d163af7-2770-4122-bbe5-25e58319bc11.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 56040,
+    "transparent": false
+  },
+  {
+    "id": "bibi-chase",
+    "path": "../art/bibi-chase.webp",
+    "source": "exec-9d163af7-2770-4122-bbe5-25e58319bc11.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 55494,
+    "transparent": false
+  },
+  {
+    "id": "bibi-over",
+    "path": "../art/bibi-over.webp",
+    "source": "exec-9d163af7-2770-4122-bbe5-25e58319bc11.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 58810,
+    "transparent": false
+  },
+  {
+    "id": "fx-ham-front",
+    "path": "../art/fx-ham-front.webp",
+    "source": "exec-35683679-4555-4dec-9eaa-eec924ab0643.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 81612,
+    "transparent": true
+  },
+  {
+    "id": "fx-ham-back",
+    "path": "../art/fx-ham-back.webp",
+    "source": "exec-35683679-4555-4dec-9eaa-eec924ab0643.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 90242,
+    "transparent": true
+  },
+  {
+    "id": "fx-maga",
+    "path": "../art/fx-maga.webp",
+    "source": "exec-35683679-4555-4dec-9eaa-eec924ab0643.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 83412,
+    "transparent": true
+  },
+  {
+    "id": "fx-speed",
+    "path": "../art/fx-speed.webp",
+    "source": "exec-35683679-4555-4dec-9eaa-eec924ab0643.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 84852,
+    "transparent": true
+  },
+  {
+    "id": "fx-burger",
+    "path": "../art/fx-burger.webp",
+    "source": "exec-35683679-4555-4dec-9eaa-eec924ab0643.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 127764,
+    "transparent": true
+  },
+  {
+    "id": "fx-heavy",
+    "path": "../art/fx-heavy.webp",
+    "source": "exec-35683679-4555-4dec-9eaa-eec924ab0643.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 112986,
+    "transparent": true
+  },
+  {
+    "id": "fx-lion",
+    "path": "../art/fx-lion.webp",
+    "source": "exec-27103709-4130-4d48-9f87-c8a694d5081d.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 108976,
+    "transparent": true
+  },
+  {
+    "id": "fx-lion-back",
+    "path": "../art/fx-lion-back.webp",
+    "source": "exec-27103709-4130-4d48-9f87-c8a694d5081d.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 83524,
+    "transparent": true
+  },
+  {
+    "id": "fx-afuera",
+    "path": "../art/fx-afuera.webp",
+    "source": "exec-27103709-4130-4d48-9f87-c8a694d5081d.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 106888,
+    "transparent": true
+  },
+  {
+    "id": "fx-saw-arc",
+    "path": "../art/fx-saw-arc.webp",
+    "source": "exec-27103709-4130-4d48-9f87-c8a694d5081d.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 101212,
+    "transparent": true
+  },
+  {
+    "id": "fx-rescue",
+    "path": "../art/fx-rescue.webp",
+    "source": "exec-27103709-4130-4d48-9f87-c8a694d5081d.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 88682,
+    "transparent": true
+  },
+  {
+    "id": "fx-rescue-exit",
+    "path": "../art/fx-rescue-exit.webp",
+    "source": "exec-27103709-4130-4d48-9f87-c8a694d5081d.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 95870,
+    "transparent": true
+  },
+  {
+    "id": "fx-bibi",
+    "path": "../art/fx-bibi.webp",
+    "source": "exec-c671122c-0f0a-49cb-b61a-317e891cdb00.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 97336,
+    "transparent": true
+  },
+  {
+    "id": "fx-crown",
+    "path": "../art/fx-crown.webp",
+    "source": "exec-c671122c-0f0a-49cb-b61a-317e891cdb00.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 109764,
+    "transparent": true
+  },
+  {
+    "id": "fx-speech",
+    "path": "../art/fx-speech.webp",
+    "source": "exec-c671122c-0f0a-49cb-b61a-317e891cdb00.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 86970,
+    "transparent": true
+  },
+  {
+    "id": "fx-speech-wave",
+    "path": "../art/fx-speech-wave.webp",
+    "source": "exec-c671122c-0f0a-49cb-b61a-317e891cdb00.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 100484,
+    "transparent": true
+  },
+  {
+    "id": "fx-card",
+    "path": "../art/fx-card.webp",
+    "source": "exec-c671122c-0f0a-49cb-b61a-317e891cdb00.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 87460,
+    "transparent": true
+  },
+  {
+    "id": "fx-shield",
+    "path": "../art/fx-shield.webp",
+    "source": "exec-c671122c-0f0a-49cb-b61a-317e891cdb00.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 100362,
+    "transparent": true
+  },
+  {
+    "id": "protester-0",
+    "path": "../art/protester-0.webp",
+    "source": "exec-4ba02945-7fc9-4659-a36e-bbafb23cd961.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 67170,
+    "transparent": true
+  },
+  {
+    "id": "placard-0",
+    "path": "../art/placard-0.webp",
+    "source": "exec-4ba02945-7fc9-4659-a36e-bbafb23cd961.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 70660,
+    "transparent": true
+  },
+  {
+    "id": "protester-1",
+    "path": "../art/protester-1.webp",
+    "source": "exec-4ba02945-7fc9-4659-a36e-bbafb23cd961.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 86790,
+    "transparent": true
+  },
+  {
+    "id": "placard-1",
+    "path": "../art/placard-1.webp",
+    "source": "exec-4ba02945-7fc9-4659-a36e-bbafb23cd961.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 79914,
+    "transparent": true
+  },
+  {
+    "id": "protester-2",
+    "path": "../art/protester-2.webp",
+    "source": "exec-4ba02945-7fc9-4659-a36e-bbafb23cd961.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 85374,
+    "transparent": true
+  },
+  {
+    "id": "placard-2",
+    "path": "../art/placard-2.webp",
+    "source": "exec-4ba02945-7fc9-4659-a36e-bbafb23cd961.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 70106,
+    "transparent": true
+  },
+  {
+    "id": "obstacle-tariff",
+    "path": "../art/obstacle-tariff.webp",
+    "source": "exec-f7fd59da-b0c5-4ff2-b718-2657e6192dfa.png",
+    "width": 512,
+    "height": 468,
+    "bytes": 58044,
+    "transparent": true
+  },
+  {
+    "id": "obstacle-burger",
+    "path": "../art/obstacle-burger.webp",
+    "source": "exec-f7fd59da-b0c5-4ff2-b718-2657e6192dfa.png",
+    "width": 512,
+    "height": 468,
+    "bytes": 84284,
+    "transparent": true
+  },
+  {
+    "id": "obstacle-podium",
+    "path": "../art/obstacle-podium.webp",
+    "source": "exec-f7fd59da-b0c5-4ff2-b718-2657e6192dfa.png",
+    "width": 512,
+    "height": 468,
+    "bytes": 81150,
+    "transparent": true
+  },
+  {
+    "id": "obstacle-printer",
+    "path": "../art/obstacle-printer.webp",
+    "source": "exec-f7fd59da-b0c5-4ff2-b718-2657e6192dfa.png",
+    "width": 512,
+    "height": 468,
+    "bytes": 76744,
+    "transparent": true
+  },
+  {
+    "id": "white-house",
+    "path": "../art/white-house.webp",
+    "source": "exec-47a6f51e-f988-48f9-bc02-665ced8605d5.png",
+    "width": 1536,
+    "height": 512,
+    "bytes": 148084,
+    "transparent": true
+  },
+  {
+    "id": "power-gas",
+    "path": "../art/power-gas.webp",
+    "source": "exec-5126c7fa-68df-485e-a33a-6cbf24a58fc1.png",
+    "width": 512,
+    "height": 341,
+    "bytes": 54428,
+    "transparent": true
+  },
+  {
+    "id": "fx-gas",
+    "path": "../art/fx-gas.webp",
+    "source": "exec-5126c7fa-68df-485e-a33a-6cbf24a58fc1.png",
+    "width": 512,
+    "height": 341,
+    "bytes": 59270,
+    "transparent": true
+  },
+  {
+    "id": "power-chosen",
+    "path": "../art/power-chosen.webp",
+    "source": "exec-5126c7fa-68df-485e-a33a-6cbf24a58fc1.png",
+    "width": 512,
+    "height": 341,
+    "bytes": 85380,
+    "transparent": true
+  },
+  {
+    "id": "fx-chosen",
+    "path": "../art/fx-chosen.webp",
+    "source": "exec-5126c7fa-68df-485e-a33a-6cbf24a58fc1.png",
+    "width": 512,
+    "height": 341,
+    "bytes": 90946,
+    "transparent": true
+  },
+  {
+    "id": "ben-head-front",
+    "path": "../art/ben-head-front.webp",
+    "source": "exec-2add14f8-ce03-467f-96a1-4f593d6771f3.png",
+    "width": 640,
+    "height": 640,
+    "bytes": 109222,
+    "transparent": true
+  },
+  {
+    "id": "ben-head-back",
+    "path": "../art/ben-head-back.webp",
+    "source": "exec-2add14f8-ce03-467f-96a1-4f593d6771f3.png",
+    "width": 640,
+    "height": 640,
+    "bytes": 134292,
+    "transparent": true
+  },
+  {
+    "id": "power-chicken",
+    "path": "../art/power-chicken.webp",
+    "source": "exec-e3f3ab01-8275-4907-8a09-c93c9009bc60.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 58968,
+    "transparent": true
+  },
+  {
+    "id": "fx-chicken-back",
+    "path": "../art/fx-chicken-back.webp",
+    "source": "exec-e3f3ab01-8275-4907-8a09-c93c9009bc60.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 57122,
+    "transparent": true
+  },
+  {
+    "id": "power-chickenflight",
+    "path": "../art/power-chickenflight.webp",
+    "source": "exec-e3f3ab01-8275-4907-8a09-c93c9009bc60.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 77336,
+    "transparent": true
+  },
+  {
+    "id": "fx-chickenflight",
+    "path": "../art/fx-chickenflight.webp",
+    "source": "exec-e3f3ab01-8275-4907-8a09-c93c9009bc60.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 68062,
+    "transparent": true
+  },
+  {
+    "id": "power-presspanic",
+    "path": "../art/power-presspanic.webp",
+    "source": "exec-e3f3ab01-8275-4907-8a09-c93c9009bc60.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 93996,
+    "transparent": true
+  },
+  {
+    "id": "fx-presspanic",
+    "path": "../art/fx-presspanic.webp",
+    "source": "exec-e3f3ab01-8275-4907-8a09-c93c9009bc60.png",
+    "width": 512,
+    "height": 512,
+    "bytes": 116460,
+    "transparent": true
+  },
+  {
+    "id": "ben-event",
+    "path": "../art/ben-event.webp",
+    "source": "exec-9ee01bdc-d288-4d80-8979-16023184e2c6.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 44406,
+    "transparent": false
+  },
+  {
+    "id": "ben-speech",
+    "path": "../art/ben-speech.webp",
+    "source": "exec-9ee01bdc-d288-4d80-8979-16023184e2c6.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 46246,
+    "transparent": false
+  },
+  {
+    "id": "ben-realization",
+    "path": "../art/ben-realization.webp",
+    "source": "exec-9ee01bdc-d288-4d80-8979-16023184e2c6.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 40830,
+    "transparent": false
+  },
+  {
+    "id": "ben-escape",
+    "path": "../art/ben-escape.webp",
+    "source": "exec-9ee01bdc-d288-4d80-8979-16023184e2c6.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 40434,
+    "transparent": false
+  },
+  {
+    "id": "ben-chase",
+    "path": "../art/ben-chase.webp",
+    "source": "exec-9ee01bdc-d288-4d80-8979-16023184e2c6.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 52692,
+    "transparent": false
+  },
+  {
+    "id": "ben-over",
+    "path": "../art/ben-over.webp",
+    "source": "exec-9ee01bdc-d288-4d80-8979-16023184e2c6.png",
+    "width": 498,
+    "height": 498,
+    "bytes": 45520,
+    "transparent": false
+  }
+]
