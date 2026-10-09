@@ -1,8 +1,6 @@
-# Diaper Boy Milei
-Mobile static launch site with the existing Diaper Run game. No build step or external runtime dependencies for the website.
+# Diaper Boy Milei · Hikari Studios
+A mobile, App Store inspired parody listing for the existing Diaper Run game. The Obtener and demo buttons open the real game fullscreen in a browser dialog. The page uses the existing six portrait campaign images, game art, and bundled game runtime.
 
-Serve the root with any static HTTP server. Game loads only after Play. Rename the page through GAME_NAME in app.js.
+Static site; no build step or external dependencies. All links are relative so it works at the GitHub Pages repository path. Rename the game by changing `GAME_NAME` once in `app.js`.
 
-Assets: six existing campaign images (first three gameplay, last three promotional renders), existing rescue/press/chaos art, real gameplay screenshot, game character crop and licensed bundled display font. The third campaign screenshot is from an earlier game version. Reviews, rankings, counters and patch notes are explicitly fictional parody. Local records stay on the device; challenge card score is illustrative.
-
-GitHub Pages: repository root, main branch. `.nojekyll` preserves runtime assets. All paths are relative, supporting a repository subpath.
+Ratings, rankings, reviews, “offline” copy, and the version note are fictional parody. Gameplay markers distinguish the real screenshots from promotional artwork; campaign image 3 is from an earlier game build. The footer identifies Hikari Studios and states the political parody/non-affiliation.
