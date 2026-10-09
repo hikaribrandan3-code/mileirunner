@@ -35,3 +35,7 @@
 @media(max-width:350px){#menu .menu-grid b{font-size:10px}#menu .menu-grid button{min-height:60px}#menu .menu-bottom>.primary{font-size:21px}}
 @media(max-height:700px){#menu .menu-bottom{bottom:max(12px,env(safe-area-inset-bottom));gap:9px}#menu .menu-grid button{min-height:60px}#menu .menu-bottom>.primary{min-height:43px;font-size:22px}.parody-sheet{max-height:94dvh;padding:19px 18px 15px}.parody-sheet p{font-size:13px;margin:8px 0}.parody-note{margin:10px 0;padding:9px}}
 @media(orientation:landscape){#menu .tour-poster{width:56%;object-position:center 30%}#menu .menu-bottom{left:auto;right:3%;width:40%;bottom:20px}#menu .menu-grid b{font-size:10px}#menu .menu-toolbar{padding:10px 12px}#menu .parody-paper{top:65px}}
+
+/* The legal close control is also a full mobile tap target. */
+.parody-close{width:44px;min-width:44px;height:44px}
+#boot-retry{margin:12px auto 0;min-height:44px;font-size:19px}

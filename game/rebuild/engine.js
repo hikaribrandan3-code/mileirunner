@@ -11,6 +11,8 @@ const VEHICLES=new Set(['bus','falcon','taxi','vehicle']);
 export class RunnerEngine extends LegacyEngine{
  reset(){super.reset();this.tuning=difficultyAt(this.difficulty);this.chase=new PressChase((type,details)=>this.emit(type,details),this.tuning);this.speed=this.tuning.start;this.meter=this.tuning.meterStart;this.activationSafe=0;this.groundY=0;this.previousGroundY=0;this.previousAirY=0;this.vy=0;this.fastFall=false;this.laneFrom=0;this.laneTime=.16;this.actionAge=0;this.nearCooldown=0;this.lastTemplate=-1;this.patternHistory=[];this.inputHistory=[];this.previousDistance=0;this.previousX=0;this.previousY=0;this.presentationScale=1;this.nextPattern=.1;this.powerGap=5.8;this.firstPowerSpawned=false;this.jumpTime=0;this.airY=0;this.runSeed=this.seed;this.powerAge=0;this.powerSpawnIndex=0;this.unlockedThisRun=[];}
  spawn(...args){const o=super.spawn(...args);if(o){o.resolved=false;o.roofReward=false;o.length=shape(o.kind).length;}return o;}
+ // Every deliberate Play starts the selected runner's complete story.
+ start({restart=false}={}){this.endPower();this.reset();this.restarting=restart;this.state=restart?STATES.RESTART:STATES.INTRO;this.emit('start',{state:this.state});}
  handoff(){super.handoff();if(this.state===STATES.RUNNING)this.pattern();}
  input(action){if(![STATES.RUNNING].includes(this.state))return false;this.lastActionTime=this.elapsed;this.actionAge=0;this.inputHistory.push({t:this.elapsed,action});if(this.inputHistory.length>120)this.inputHistory.shift();
   if(action==='left'||action==='right'){const next=clamp(this.lane+(action==='left'?-1:1),-1,1);if(next===this.lane)return false;this.laneFrom=this.x;this.laneTime=0;this.lane=next;this.emit('lane',{direction:action});return true;}

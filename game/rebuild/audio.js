@@ -1,13 +1,21 @@
 import {BONUS_POWERS} from './characters.js';
 import {DiaperAudio as LegacyAudio} from '../audio.js';
 export class DiaperAudio extends LegacyAudio{
- async unlock(){await super.unlock();await this.decodeOptional();if(this.mode==='menu')this.setMode('menu');}
+ async unlock(){const resumed=super.unlock();void this.decodeOptional();await resumed;if(this.mode==='menu')this.setMode('menu');}
  setMode(mode){super.setMode(mode);if(mode==='menu'&&this.external.menuComedy&&!this.externalSource)this.playExternal(this.external.menuComedy,true,.35);}
+ async fetchOptional(src){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);try{const response=await fetch(src,{signal:controller.signal});if(!response.ok)throw Error('Audio unavailable');return await response.arrayBuffer();}finally{clearTimeout(timer);}}
+ async loadOptional(){if(!this.manifestReady)this.manifestReady=this.fetchOptional(new URL('../audio/manifest-v3.json',import.meta.url)).then(bytes=>JSON.parse(new TextDecoder().decode(bytes))).catch(()=>({}));this.manifest=await this.manifestReady;return this.manifest;}
  async decodeOptional(){if(!this.ctx)return;if(!this.decodePromise)this.decodePromise=this.decodeSamples();return this.decodePromise;}
- async loadOptional(){this.manifest=await fetch(new URL('../audio/manifest-v3.json',import.meta.url)).then(r=>{if(!r.ok)throw Error('Audio manifest unavailable');return r.json();}).catch(()=>({}));}
- async decodeSamples(){if(!this.ctx||this.optionalLoaded)return;this.optionalLoaded=true;await this.loadOptional();this.sampleFX={};this.sampleLoops={};this.audioErrors=[];const decode=async(src)=>{try{const r=await fetch(new URL('../audio/'+src,import.meta.url));if(!r.ok)throw Error(src);return await this.ctx.decodeAudioData(await r.arrayBuffer());}catch{this.audioErrors.push(src);return null;}};
-  await Promise.all([...[['circus','circus'],['gameOver','gameOver'],['introComedy','introComedy'],['menuComedy','menuComedy']].map(async([key,dest])=>{if(this.manifest[key])this.external[dest]=await decode(this.manifest[key]);}),...Object.entries(this.manifest.effects||{}).map(async([key,src])=>this.sampleFX[key]=await decode(src)),...Object.entries(this.manifest.loops||{}).map(async([key,src])=>this.sampleLoops[key]=await decode(src))]);const mode=this.mode;this.mode='silent';this.setMode(mode);
+ async decodeSamples(){
+  if(!this.ctx||this.optionalLoaded)return;this.optionalLoaded=true;await this.loadOptional();this.sampleFX={};this.sampleLoops={};this.audioErrors=[];
+  const decode=async src=>{try{const bytes=await this.fetchOptional(new URL('../audio/'+src,import.meta.url));if(!this.ctx||this.disposed)return null;return await this.ctx.decodeAudioData(bytes);}catch{this.audioErrors.push(src);return null;}};
+  await Promise.all([
+   ...['circus','gameOver','introComedy','menuComedy'].map(async key=>{if(!this.manifest[key])return;const buffer=await decode(this.manifest[key]);if(!buffer||this.disposed)return;this.external[key]=buffer;const active={menu:'menuComedy',running:'circus',intro:'introComedy',over:'gameOver'}[this.mode];if(active===key&&!this.externalSource){const mode=this.mode;this.mode='silent';this.setMode(mode);}}),
+   ...Object.entries(this.manifest.effects||{}).map(async([key,src])=>this.sampleFX[key]=await decode(src)),
+   ...Object.entries(this.manifest.loops||{}).map(async([key,src])=>this.sampleLoops[key]=await decode(src))
+  ]);
  }
+
  playSample(buffer,bus='sfx',gain=.6){if(!buffer||!this.ctx||this.ctx.state!=='running'||this.prefs.mute)return false;const s=this.ctx.createBufferSource(),g=this.ctx.createGain();s.buffer=buffer;g.gain.value=gain;s.connect(g).connect(this.buses[bus]);return this.track(s,g,buffer.duration,this.ctx.currentTime);}
  startStreamLoop(){const b=this.sampleLoops?.stream;if(!b||!this.ctx||this.ctx.state!=='running'||this.streamSource||this.prefs.mute||this.prefs.music===0)return;const s=this.ctx.createBufferSource(),g=this.ctx.createGain(),now=this.ctx.currentTime;s.buffer=b;s.loop=true;g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.11,now+1.15);s.connect(g).connect(this.buses.music);s.start(now);s.onended=()=>{s.disconnect();g.disconnect();};this.streamSource=s;this.streamGain=g;}
  stopStreamLoop(fade=.65){if(!this.streamSource||!this.ctx)return;const s=this.streamSource,g=this.streamGain,now=this.ctx.currentTime;this.streamSource=null;this.streamGain=null;g.gain.cancelScheduledValues(now);g.gain.setTargetAtTime(.0001,now,Math.max(.015,fade/3));try{s.stop(now+Math.max(.04,fade));}catch{}}
@@ -21,6 +29,7 @@ export class DiaperAudio extends LegacyAudio{
  tick(engine){super.tick(engine);if(this.externalSource&&this.mode==='running')this.externalSource.playbackRate.setTargetAtTime(Math.min(1.08,1+Math.max(0,engine.speed-18)*.005),this.ctx.currentTime,.6);}
  introCue(shot){if(shot===1){const key=['speechMilei','speechTrump','speechBibi','speechBen'][this.prefs.character||0];this.lastSpeech={key,shot};this.duck(1.8);this.playSample(this.sampleFX?.[key],'voice',.82);return;}if(shot===0){this.setMode('intro');this.noise(.04,{bus:'ambience',gain:.08});return;}if(shot===2){this.playSample(this.sampleFX?.realization,'voice',.82);return;}if(shot===3){this.playSample(this.sampleFX?.escapeFootsteps,'sfx',.42);super.introCue(shot);return;}if(shot===4){this.playSample(this.sampleFX?.chaseShout,'voice',.72);return;}super.introCue(shot);}
  pause(){this.stopStreamLoop(.04);super.pause();}
- async resume(engine){await super.resume(engine);if(['gas','chickenflight'].includes(engine?.power))this.startLoop(engine.power);if(engine?.chase?.live)this.startStreamLoop();}
+ async resume(engine){await super.resume(engine);if(engine?.power)this.startLoop(engine.power);if(engine?.chase?.live)this.startStreamLoop();}
+ dispose(){this.disposed=true;super.dispose();}
  snapshot(){return {...super.snapshot(),installedSamples:Object.values(this.sampleFX||{}).filter(Boolean).length+Object.values(this.sampleLoops||{}).filter(Boolean).length+Object.values(this.external).filter(Boolean).length,audioErrors:this.audioErrors||[],speech:this.lastSpeech||null,menuLoopSeconds:this.external.menuComedy?.duration||0};}
 }

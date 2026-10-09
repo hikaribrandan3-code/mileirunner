@@ -1,0 +1,94 @@
+/* Tablets and computers use the available viewport. Phone framing stays intact. */
+@media(min-width:700px) and (min-height:600px){
+ #game{width:100%;height:100dvh}
+ #menu::before{content:'';position:absolute;inset:-20px;z-index:0;background:#08243f url('../art/world-tour-cover-v4.webp') center/cover;filter:blur(16px) brightness(.45)}
+ #menu .tour-poster{z-index:1;object-fit:contain;object-position:center}
+ #menu .menu-bottom{width:min(86%,680px);left:50%;right:auto;transform:translateX(-50%);gap:15px;bottom:max(24px,env(safe-area-inset-bottom))}
+ #menu .menu-bottom>.primary{min-height:64px;font-size:32px}
+ #menu .menu-grid button{min-height:94px}
+ #menu .menu-grid b{font-size:15px}
+ #menu .menu-grid span{height:35px}
+ #menu .menu-grid svg{width:35px;height:35px}
+ #menu .menu-toolbar{padding:18px 22px 0}
+ #menu .menu-wallet{top:20px;left:82px;display:flex}
+ #menu .parody-paper{top:79px;right:24px;width:46px;height:44px}
+ .selector-header{min-height:100px;padding:18px 64px 8px}
+ .selector-header h2{font-size:42px}
+ .selector-close{left:22px;top:26px;width:50px;height:50px}
+ .selector-footer{width:min(90%,780px);margin:0 auto;padding-bottom:max(24px,env(safe-area-inset-bottom))}
+ #characters .character-options button{height:140px}
+ #characters .character-options b{font-size:17px}
+ .selector-kit{padding:18px 14px;width:34%}
+ .selector-kit h3{font-size:18px}
+ .selector-kit strong{font-size:16px}
+ .selector-kit small{font-size:12px}
+ .selector-kit img{width:46px;height:50px}
+ .selector-kit ul{gap:18px}
+ .selector-arrow{width:56px;height:56px}
+ .selector-arrow svg{width:28px;height:28px}
+ .selector-podium h3{font-size:38px}
+ #selector-play{min-height:64px;font-size:32px}
+ .difficulty-picker button{min-height:44px;font-size:18px}
+ #character-lock{font-size:13px;margin:12px 0}
+ .hud-top{padding:20px 22px}
+ .distance-pill b{font-size:30px}
+ .distance-pill small{font-size:10px}
+ .resources>span{min-width:82px;font-size:21px}
+ .resources>span b{font-size:24px}
+ .hud-bottom{left:50%;width:min(70%,640px);transform:translateX(-50%);bottom:max(22px,env(safe-area-inset-bottom))}
+ .meter-panel{padding:10px 14px}
+ .meter-label{font-size:20px}
+ .meter-label b{font-size:22px}
+ #power-hud{height:54px}
+ #power-name{font-size:18px}
+ #live-comments{left:22px;max-width:250px;width:24%}
+ .live-comment{font-size:13px;padding:5px 7px}
+ .live-comment b{font-size:11px}
+ #live-reactions{right:24px}
+ #intro-caption{font-size:34px}
+ #cinematic[data-character]:not([data-character=milei]) #intro-stage{object-fit:contain;background:#071b35}
+ .loader-progress{width:min(70%,580px);margin-bottom:5%}
+ #results .result-bottom{width:min(84%,640px);left:50%;transform:translateX(-50%);bottom:22px}
+ #results .result-top h2{font-size:54px}
+ #results .results-art{inset:110px 0 280px}
+ #results .result-stats b{font-size:28px}
+ #results .result-bottom>.primary{min-height:54px;font-size:30px}
+ #results .result-characters{min-height:48px;font-size:20px}
+ #results .result-actions button{min-height:48px;font-size:18px}
+}
+@media(min-width:700px) and (min-height:600px) and (orientation:landscape){
+ #menu .tour-poster{width:58%;height:100%;left:0;object-fit:contain}
+ #menu .menu-bottom{left:auto;right:4%;width:34%;max-width:520px;bottom:16%;transform:none;gap:24px}
+ #menu .menu-bottom>.primary{width:100%;min-height:72px;font-size:34px}
+ #menu .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ #menu .menu-grid button{min-height:108px}
+ .selector-header{min-height:90px}
+ .selector-stage{position:absolute;inset:90px 42% 24px 2%;min-height:0}
+ .selector-footer{position:absolute;inset:90px 4% 24px 60%;width:auto;display:flex;flex-direction:column;justify-content:center;padding:0;margin:0}
+ #characters .character-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+ #characters .character-options button{height:clamp(110px,19vh,180px)}
+ .selector-kit{top:12%;width:36%}
+ .selector-kit strong{font-size:14px}
+ .selector-kit small{font-size:10px}
+ .selector-kit img{width:36px;height:42px}
+ .selector-kit h3{font-size:15px}
+ .selector-arrow.prev{left:8px}.selector-arrow.next{right:8px}
+ #results .results-art{inset:105px 44% 22px 2%;background-size:contain}
+ #results .result-top{left:3%;width:50%;top:24px}
+ #results .result-bottom{left:auto;right:4%;width:36%;max-width:530px;bottom:13%;transform:none;gap:12px}
+ #results .result-top h2{font-size:46px}
+ #results blockquote{font-size:18px;padding:10px}
+ .loader-background{width:58%;object-fit:contain}
+ #boot{align-items:flex-end;justify-content:center}
+ .loader-progress{width:32%;margin:0 5% 0 0}
+ #intro-character{width:70%;left:15%;object-fit:contain}
+ #cinematic[data-shot='1'] #intro-character,#cinematic[data-shot='2'] #intro-character,#cinematic[data-shot='3'] #intro-character{width:85%;left:7.5%;height:100%;object-fit:contain}
+}
+.input-hint{display:none}
+.unlock-reveal{gap:clamp(8px,1.5vh,16px)}
+.unlock-reveal h2,.unlock-reveal h3,.unlock-reveal p{margin:0}
+.unlock-reveal img{min-height:0;flex-shrink:1}
+.unlock-reveal button{flex-shrink:0;max-width:580px}
+@media(min-width:700px) and (min-height:600px) and (pointer:fine){
+ .input-hint{display:block;position:absolute;left:50%;top:22px;transform:translateX(-50%);margin:0;padding:8px 12px;border:1px solid #8bc9eb55;border-radius:10px;background:#061b35c9;color:#d3e8f5;font:600 12px/1.4 Arial;text-align:center;pointer-events:none}
+}
