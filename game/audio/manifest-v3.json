@@ -1,8 +1,8 @@
 {
   "version": 4,
   "circus": "v4/circus-calliope.mp3",
-  "gameOver": "v3/game_over.wav",
-  "intro": "v3/intro.wav",
+  "gameOver": "v3/mobile/game_over.mp3",
+  "intro": "v3/mobile/intro.mp3",
   "effects": {
     "jump": "v3/mobile/jump.mp3",
     "land": "v3/mobile/land.mp3",
