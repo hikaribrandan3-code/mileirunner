@@ -30,7 +30,11 @@ export class CharacterSelector {
   this.root.style.setProperty('--runner-color',COLORS[this.index]);this.root.dataset.runner=c.id;
   this.hero.src='../art/'+ART[this.index]+'.webp';this.hero.alt=NAMES[this.index];
   this.root.querySelector('#character-name').textContent=NAMES[this.index];
-  this.root.querySelector('#character-lock').textContent=open?(en?'READY TO RUN':'LISTO PARA EL CAOS'):(en?'SURVIVE '+c.unlock+' SECONDS IN ONE RUN · BEST: '+Math.floor(this.progress.bestSurvival||0)+' s':'SOBREVIVÍ '+c.unlock+' SEGUNDOS EN UNA CARRERA · TU MEJOR: '+Math.floor(this.progress.bestSurvival||0)+' s');
+  const lock=this.root.querySelector('#character-lock'),best=Math.floor(this.progress.bestSurvival||0);lock.replaceChildren();
+  const label=document.createElement('span'),time=document.createElement('strong'),detail=document.createElement('small');
+  if(open){label.textContent=en?'UNLOCKED':'DESBLOQUEADO';time.textContent=(en?'BEST ':'RÉCORD ')+best+' s';detail.textContent=en?'READY TO RUN':'LISTO PARA EL CAOS';}
+  else{const remaining=Math.max(0,c.unlock-best);label.textContent=en?'UNLOCKS AT':'SE DESBLOQUEA A LOS';time.textContent=c.unlock+' s';detail.textContent=en?'BEST: '+best+' s · '+remaining+' s TO GO':'TU MEJOR: '+best+' s · TE FALTAN '+remaining+' s';}
+  lock.append(label,time,detail);
   this.root.querySelectorAll('[data-character]').forEach(b=>{const i=Number(b.dataset.character),available=isUnlocked(this.progress,i);b.setAttribute('aria-pressed',i===this.index);b.setAttribute('aria-label',NAMES[i]+(available?'':', '+characterAt(i).unlock+' s'));b.querySelector('small').textContent=available?'':characterAt(i).unlock+' s';});
   this.root.querySelector('#selector-abilities').replaceChildren(...KITS[this.index].map(([id,name,description])=>{const row=document.createElement('li'),img=new Image(),label=document.createElement('div'),strong=document.createElement('strong'),detail=document.createElement('small');img.src='../art/'+(ICON[id]||'power-'+id)+'.webp';img.alt='';strong.textContent=name;detail.textContent=description;label.append(strong,detail);row.append(img,label);return row;}));
   const play=this.root.querySelector('#selector-play');play.disabled=this.busy||!open;play.querySelector('b').textContent=this.busy?(en?'LOADING…':'CARGANDO…'):open?(en?'PLAY':'¡A CORRER!'):(en?'LOCKED':'BLOQUEADO');

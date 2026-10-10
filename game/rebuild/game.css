@@ -156,3 +156,5 @@
 .pause-hero,#meter-face{object-fit:cover;object-position:center 18%}
 @media(max-height:700px) and (orientation:portrait){#results .results-art{inset:78px 0 243px}#results .result-top h2{font-size:36px}#results blockquote{font-size:12px}#results .result-stats b{font-size:20px}#results .result-bottom{gap:5px}}
 @media(orientation:landscape) and (max-height:500px){#results .results-art{inset:64px 52% 12px 0}#results .result-top{left:1%;width:46%;top:12px}#results .result-top h2{font-size:27px}#results .result-bottom{left:51%;width:47%;bottom:8px}#results .result-bottom>.primary{min-height:44px;font-size:21px}#results .result-actions button{font-size:12px}#results #new-record{top:54px;font-size:10px}}
+#results .result-survival{display:inline-flex;align-items:center;gap:10px;margin-top:9px;padding:6px 15px;border:2px solid #ffe95a;border-radius:15px;background:#06182def;box-shadow:0 3px 0 #031020;color:#fff6d5;font:900 12px/1 Arial,sans-serif;letter-spacing:1px}
+#results .result-survival b{color:#ffe34f;font-size:24px;letter-spacing:0}
