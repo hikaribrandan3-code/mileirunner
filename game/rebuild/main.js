@@ -102,12 +102,26 @@ for(const name of ['pointerup','pointercancel','lostpointercapture'])$('#world')
 function pauseHidden(){pointer=null;accumulator=0;lastTime=0;engine.pause();audio.pause();}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseHidden();});window.addEventListener('blur',()=>{if([STATES.RUNNING,STATES.INTRO,STATES.REPEAT,STATES.COUNTDOWN].includes(engine.state))pauseHidden();});
 window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent)return;if(e.data?.type==='DIAPER_RUN_PAUSE')engine.pause();if(e.data?.type==='MENUTAP_GAME_CONTEXT'){business=String(e.data.businessName||'').slice(0,60);locationName=String(e.data.locationName||'').slice(0,70);shareLink=String(e.data.shareUrl||new URL('../../',import.meta.url).href);$('.brand-pill').textContent=business?business.toUpperCase():'UGC GAMES';}});
-let accumulator=0;const FIXED_STEP=1/60;let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>renderer?.resize(),80);});
+let accumulator=0;const FIXED_STEP=1/60;let resizeTimer;
+function resizeGame(){
+ pointer=null;
+ clearTimeout(resizeTimer);
+ resizeTimer=setTimeout(()=>{
+  if(dead||!renderer)return;
+  renderer.resize();
+  // Resizing clears WebGL's drawing buffer even while the simulation is paused.
+  renderer.draw(engine,0);
+ },80);
+}
+window.addEventListener('resize',resizeGame);
+window.visualViewport?.addEventListener('resize',resizeGame);
+const gameSizeObserver=new ResizeObserver(resizeGame);
+gameSizeObserver.observe(game);
 $('#world').addEventListener('runner-context-lost',()=>{engine.pause();notify('La pista se pausó. Recuperando gráficos…');});$('#world').addEventListener('runner-context-restored',()=>notify('Gráficos recuperados. Tocá seguir.'));
 function loop(t){if(dead)return;if(window.DiaperDebug?.freezeFixture){lastTime=t;raf=requestAnimationFrame(loop);return;}const raw=lastTime?(t-lastTime)/1000:0;lastTime=t;const dt=Math.min(.1,raw);const before=engine.state;accumulator+=dt;let ticks=0;while(accumulator>=FIXED_STEP&&ticks++<6){engine.update(FIXED_STEP);accumulator-=FIXED_STEP;}if(ticks>=6)accumulator=0;if(before!==engine.state)game.dataset.state=engine.state;
  const active=[STATES.RUNNING,STATES.INTRO,STATES.REPEAT,STATES.COUNTDOWN,STATES.RESTART,STATES.IMPACT].includes(engine.state);if(active||engine.state===STATES.MENU)renderer.draw(engine,engine.state===STATES.COUNTDOWN?0:dt,accumulator/FIXED_STEP);if(engine.state===STATES.INTRO||engine.state===STATES.REPEAT)intro();if(engine.state===STATES.COUNTDOWN){$('#countdown').hidden=false;const label=String(Math.max(1,Math.ceil(engine.countTime/.5)));if(label!==countLast){countLast=label;$('#countdown').textContent=label;audio.event({type:'go'});}}else{$('#countdown').hidden=true;countLast='';}
  uiTime+=dt;if(active&&uiTime>.06){uiTime=0;updateHUD();}broadcast.update(engine,dt*engine.presentationScale);audio.tick(engine);if(raw>0&&active){frameSamples.push(raw*1000);if(frameSamples.length>300)frameSamples.shift();}if(!renderer.lowQuality&&frameSamples.length===300&&frameSamples.filter(v=>v>28).length>90){renderer.lowQuality=true;renderer.resize();}raf=requestAnimationFrame(loop);}
-function cleanup(){dead=true;cancelLaunch();cancelAnimationFrame(raf);clearTimeout(toastTimer);clearTimeout(calloutTimer);clearTimeout(resizeTimer);audio.dispose();renderer?.dispose();}
+function cleanup(){dead=true;cancelLaunch();cancelAnimationFrame(raf);clearTimeout(toastTimer);clearTimeout(calloutTimer);clearTimeout(resizeTimer);gameSizeObserver.disconnect();window.removeEventListener('resize',resizeGame);window.visualViewport?.removeEventListener('resize',resizeGame);audio.dispose();renderer?.dispose();}
 window.addEventListener('pagehide',e=>{if(e.persisted)pauseHidden();else cleanup();});
 window.addEventListener('pageshow',e=>{if(e.persisted){lastTime=0;notify('Pausado. Tocá continuar.');}});
 tr();settingsUI();

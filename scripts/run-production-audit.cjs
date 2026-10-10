@@ -15,7 +15,7 @@ async function run(browser,script){
 }
 (async()=>{
  for(const script of scripts){
-  const browsers=script==='audit-inputs.cjs'?['chromium']:['chromium','webkit'];
+  const browsers=['audit-inputs.cjs','audit-ipad-touch.cjs'].includes(script)?['chromium']:['chromium','webkit'];
   // Frame measurements must not compete with another browser on this host.
   if(script==='audit-performance.cjs')for(const browser of browsers)await run(browser,script);
   else await Promise.all(browsers.map(browser=>run(browser,script)));

@@ -6,7 +6,7 @@ const checks=[],errors=[],check=(label,value)=>{assert(value,label);checks.push(
 const p=await browser.newPage({viewport:{width:768,height:1024},hasTouch:true});p.on('pageerror',e=>errors.push(e.stack));
 try{
  await p.goto(base+'/game/?test=1&testCharacters=1');await p.waitForFunction(()=>window.DiaperDebug,{},{timeout:60000});await p.addStyleTag({content:'#acceptance-controls,#acceptance-stats{display:none!important}'});
- for(const [width,height]of[[768,1024],[1024,768],[820,1180],[1180,820],[1024,1366],[1366,1024],[1280,720],[1440,900],[1920,1080]]){
+ for(const [width,height]of[[834,1194],[1194,834],[834,1210],[1210,834],[768,1024],[1024,768],[820,1180],[1180,820],[1024,1366],[1366,1024],[1280,720],[1440,900],[1920,1080]]){
   await p.setViewportSize({width,height});await p.waitForTimeout(180);
   for(const action of['menu','characters','settings','leaderboard','achievements','donate','disclaimer','paused','results']){
    await p.evaluate(()=>DiaperDebug.engine.menu());
@@ -23,5 +23,5 @@ try{
   await p.keyboard.press('p');check(`${width}x${height} keyboard pause`,await p.evaluate(()=>DiaperDebug.engine.state==='PAUSED'));await p.keyboard.press('p');await p.waitForFunction(()=>DiaperDebug.engine.state==='RUNNING');
   await p.evaluate(()=>DiaperDebug.activate('rescue'));await p.waitForTimeout(700);await p.screenshot({path:path.join(out,`${width}x${height}-flight.png`)});
  }
- await p.goto(base);await p.locator('.get-row .play').click();await p.frameLocator('#game-frame').locator('#menu').waitFor({timeout:60000});check('hosted game dialog uses tablet width',await p.locator('#game-dialog').evaluate(e=>e.getBoundingClientRect().width>700));await p.locator('#close-game').click();check('desktop close returns to listing',!await p.locator('#game-dialog').isVisible());check('no uncaught responsive errors',!errors.length);
+ await p.goto(base);await p.locator('.get-row .play').click();await p.frameLocator('#game-frame').locator('#menu').waitFor({timeout:60000});check('hosted game dialog uses tablet width',await p.locator('#game-dialog').evaluate(e=>e.getBoundingClientRect().width>700));await p.frameLocator('#game-frame').locator('#menu [data-action=exit]').click();await p.locator('#game-dialog').waitFor({state:'hidden'});check('desktop close returns to listing',!await p.locator('#game-dialog').isVisible());check('no uncaught responsive errors',!errors.length);
 }finally{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({browser:kind,checks,errors},null,2));await browser.close()}console.log('TOTAL',checks.length,'PASS');})().catch(e=>{console.error(e);process.exit(1)});
