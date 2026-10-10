@@ -6,7 +6,7 @@ const KITS=[
  [['rescue','VUELO PRESIDENCIAL','RESCATE POR EL AIRE'],['lion','MODO GATO','CABEZA GRANDE · ROMPÉ TODO'],['afuera','¡AFUERA!','CORTÁ TODO · INCLUSO TRÁFICO']],
  [['gas','AIR FORCE JR','RESCATE MILITAR POR EL AIRE'],['burger','BIG MAC ATTACK','ARRASÁ CON EL TRÁFICO'],['ham','HAM MODE','CABEZA GRANDE · SIN FRENOS']],
  [['chosen','THE CHOSEN FLIGHT','POR ENCIMA DEL CAOS'],['speech','SPEECH MODE','DESPEJÁ TU CARRIL'],['bibi','BIBI BIBI','CABEZA GRANDE · ROMPÉ TODO']],
- [['chickenflight','CLUCK AIRLINES','EL POLLO TE LLEVA'],['presspanic','PAPER STORM','DESPEJÁ LOS TRES CARRILES'],['bigben','BIG BEN MODE','CABEZA GRANDE · ROMPÉ TODO']]
+ [['chickenflight','CLUCK AIRLINES','EL POLLO TE LLEVA'],['presspanic','PAPER STORM','DESPEJÁ LOS TRES CARRILES'],['bigben','BIG BEN MODE','CABEZA GRANDE · ROMPÉ TODO'],['chicken','CHICKEN HEAD','CABEZA PEQUEÑA · MÁS FÁCIL ESQUIVAR']]
 ];
 const ICON={rescue:'power-helicopter-v2',lion:'power-cat-v2',afuera:'power-chainsaw-v2',gas:'trump-helicopter-v2',chickenflight:'ben-chicken-drone-v2'};
 export class CharacterSelector {
