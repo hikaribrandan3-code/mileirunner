@@ -1,0 +1,25 @@
+/* Result layout and exported card share the same fitted character art. */
+#results:not([hidden]){display:grid;grid-template-rows:auto minmax(100px,1fr) auto;padding:12px max(16px,env(safe-area-inset-left)) max(12px,env(safe-area-inset-bottom));background:radial-gradient(ellipse at 50% 40%,#26577d,#102a43 72%);gap:8px;overflow:auto}
+#results .result-top{position:relative;inset:auto;width:100%;transform:none;grid-row:1;text-align:center;padding:0 38px}
+#results .result-top h2{font-size:clamp(30px,6vw,54px);margin:5px 0;line-height:1}
+#results .result-top h2 br{display:none}
+#results .result-eyebrow{font-size:12px}
+#results .results-art{position:relative;inset:auto;grid-row:2;z-index:0;min-height:100px;background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:20px;background-color:#07172e55;box-shadow:0 0 0 1px #62bbec44}
+#results .results-art:after{display:none}
+#results .result-bottom{position:relative;inset:auto;width:100%;max-width:700px;margin:auto;transform:none;grid-row:3;display:flex;flex-direction:column;gap:6px}
+#results .result-bottom blockquote{margin:0;padding:8px;font-size:17px}
+#results .result-stats{padding:9px 5px}
+#results .result-stats b{font-size:clamp(24px,4vw,36px)}
+#results .result-stats small{font-size:10px}
+#results .result-stats div>span{display:none}
+#results .score-detail{font-size:13px}
+#results .result-bottom>.primary,#results .result-characters,#results .result-actions button{min-height:44px;padding:7px 10px;font-size:19px;margin:0;border-radius:16px}
+#results .result-characters{background:linear-gradient(#a8a0ff,#6859d7);color:#fff7e4}
+#results .result-settings{top:8px;right:10px;width:36px;height:36px;min-height:36px;font-size:22px}
+@media(min-width:700px){#results:not([hidden]){padding:20px max(24px,calc((100vw - 1050px)/2));gap:12px}#results .result-actions button{font-size:22px}#results .result-top h2{font-size:48px}}
+@media(orientation:landscape) and (max-height:650px){#results:not([hidden]){grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;padding:12px;gap:10px}#results .result-top{grid-column:1;grid-row:1}#results .results-art{grid-column:1;grid-row:2}#results .result-bottom{grid-column:2;grid-row:1 / 3}#results .result-top h2{font-size:30px}}
+#results .result-top,#results .results-art,#results .result-bottom{min-width:0}
+@media(orientation:landscape) and (max-height:650px){#results:not([hidden]){grid-template-columns:minmax(0,1fr) minmax(0,1fr)}#results .result-bottom{max-width:100%}#results .result-actions button{font-size:15px}#results .result-top{padding:0 12px}}
+/* Fill the result scene; the export retains the complete source composition. */
+#results .results-art{background-size:cover}
+@media(orientation:landscape) and (max-height:650px){#results .results-art{background-size:contain}}
