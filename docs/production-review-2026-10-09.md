@@ -102,6 +102,8 @@ This is a source/runtime boundary review, not penetration testing or third-party
 
 Total: **1,007 browser assertions** including four performance/network assertions, plus 17 Node tests. Flow tests cover fresh locks, engine-earned unlocks, persisted progress, all five real-time intro shots for each character, gameplay handoff, pause/resume, results, share, character changes after losing, exit/reopen and recovery. Power tests include four full model-switch cycles and saw visibility at 320×568, 768×1024, 1024×768 and 1440×900. Responsive tests span nine tablet/desktop sizes.
 
+Release `1fb65d2` was pushed to `main`. The production alias serves exact copies of the reviewed rule, engine, renderer, controller, effects and character modules. `scripts/audit-production.cjs` adds **25 live checks per engine**, passing in Chromium and WebKit: fresh menu without preview, fresh locks, no debug exposure, all four complete intros reaching RUNNING, selected pause portraits and no runtime/missing-asset errors. These private test profiles seed earned unlocks locally; they do not alter other players' progress.
+
 Failure probes intentionally abort downloads, deny storage, stall audio and simulate GPU context loss. Unlock fixtures advance actual simulation ticks; they are not a physical two-minute survival playtest.
 
 Reports/screenshots are generated under `AUDIT_OUTPUT` (default `/private/tmp/diaper-production-review/`), with reproducible scripts committed. Performance probes run sequentially and report their desktop/headless/local-server limits. Physical phone/iPad GPU, thermals, OS share sheets and autoplay policies still need hardware verification.

@@ -43,6 +43,8 @@ npm run audit
 node scripts/run-production-audit.cjs audit-inputs.cjs audit-performance.cjs
 ```
 
+After a release, `node scripts/run-production-audit.cjs audit-production.cjs` verifies hosted module contents and all character intro flows against the production alias.
+
 `AUDIT_BASE` overrides the server; `AUDIT_OUTPUT` overrides reports/screenshots. Native browser processes must be allowed by the execution environment. Performance runs are sequential to avoid competing browser measurements.
 
 See [production review](docs/production-review-2026-10-09.md) for fixes, power contracts, diaper logic and remaining code cleanup. [Mobile audit](docs/mobile-audit-2026-10-09.md) covers the earlier unlock/intro and responsive repairs. Browser tests do not replace physical phone/iPad testing.
