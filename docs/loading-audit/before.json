@@ -1,0 +1,107 @@
+{
+  "base": "http://127.0.0.1:5199",
+  "samples": [
+    {
+      "connection": "unthrottled",
+      "menuMs": 1267,
+      "sceneMs": 1310,
+      "firstPlayMs": 1498,
+      "menuBytes": 15632573,
+      "totalBytes": 16135016,
+      "errors": [],
+      "largest": [
+        {
+          "file": "milei-character.glb",
+          "bytes": 3291420,
+          "ms": 32
+        },
+        {
+          "file": "press-karina.glb",
+          "bytes": 1080652,
+          "ms": 4
+        },
+        {
+          "file": "press-female.glb",
+          "bytes": 975420,
+          "ms": 6
+        },
+        {
+          "file": "press-male.glb",
+          "bytes": 914112,
+          "ms": 13
+        },
+        {
+          "file": "foliage-premium.webp",
+          "bytes": 885332,
+          "ms": 18
+        },
+        {
+          "file": "materials-premium.webp",
+          "bytes": 621892,
+          "ms": 19
+        },
+        {
+          "file": "hazard-surfaces-premium.webp",
+          "bytes": 599756,
+          "ms": 21
+        },
+        {
+          "file": "world-tour-cover-v3.webp",
+          "bytes": 391670,
+          "ms": 17
+        }
+      ]
+    },
+    {
+      "connection": "5 Mbps / 80 ms latency",
+      "menuMs": 25264,
+      "sceneMs": 25276,
+      "firstPlayMs": 27127,
+      "menuBytes": 15108986,
+      "totalBytes": 16134247,
+      "errors": [],
+      "largest": [
+        {
+          "file": "milei-character.glb",
+          "bytes": 3291420,
+          "ms": 20647
+        },
+        {
+          "file": "press-karina.glb",
+          "bytes": 1080652,
+          "ms": 2130
+        },
+        {
+          "file": "press-female.glb",
+          "bytes": 975420,
+          "ms": 2434
+        },
+        {
+          "file": "press-male.glb",
+          "bytes": 914112,
+          "ms": 5670
+        },
+        {
+          "file": "foliage-premium.webp",
+          "bytes": 885332,
+          "ms": 11395
+        },
+        {
+          "file": "materials-premium.webp",
+          "bytes": 621892,
+          "ms": 9231
+        },
+        {
+          "file": "hazard-surfaces-premium.webp",
+          "bytes": 599756,
+          "ms": 11365
+        },
+        {
+          "file": "world-tour-cover-v3.webp",
+          "bytes": 391670,
+          "ms": 3361
+        }
+      ]
+    }
+  ]
+}

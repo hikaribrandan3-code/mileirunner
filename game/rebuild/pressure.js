@@ -9,3 +9,9 @@ export function fillRate(tuning, elapsed, power) {
  const base = tuning.meterRate + Math.min(tuning.meterExtra, elapsed * tuning.meterRamp);
  return base * (SMASH.has(power) ? SMASH_FILL_MULTIPLIER : 1);
 }
+
+// Cosmetic only: paper relief and gameplay difficulty still use the real meter.
+export function visualPressure(meter, elapsed=0) {
+ const timed = elapsed < 20 ? 0 : Math.min(100, 84 + (elapsed - 20) * 1.6);
+ return Math.max(meter, timed);
+}

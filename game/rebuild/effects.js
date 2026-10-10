@@ -1,7 +1,7 @@
 import * as T from './vendor/three.module.min.js';
 import {buildPower,buildProp,bake} from './models.js';
 import {supportAt,LANE_WIDTH} from './track.js';
-import {VISUAL_STAIN_START,VISUAL_LEAK_START} from './pressure.js';
+import {VISUAL_STAIN_START,VISUAL_LEAK_START,visualPressure} from './pressure.js';
 import {materialName} from './rig-materials.js';
 
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
@@ -64,7 +64,7 @@ export class RunnerEffects{
  event(e){if(e.type==='start'||e.type==='menu')this.reset();if(e.type==='destroy')this.emitSparks(e.lane*3.2,1.3,-(e.z||5),28);}
  emitSparks(x,y,z,n){for(let i=0;i<n;i++){const p=this.sparks.find(p=>!p.active);if(!p)break;const a=Math.random()*Math.PI*2;Object.assign(p,{active:true,x,y,z,vx:Math.cos(a)*4,vy:2+Math.random()*4,vz:Math.sin(a)*4,life:.4+Math.random()*.3});}}
  leak(position,risk=70){const p=this.drops.find(p=>!p.active);if(!p)return;const severity=clamp((risk-25)/75);Object.assign(p,{active:true,x:position.x+(Math.random()-.5)*(.22+severity*.34),y:position.y+.04,z:position.z+.12,vx:(Math.random()-.5)*(.35+severity*.45),vy:-.2-severity*.35,vz:.4,life:1.7+severity*.7,size:.11+severity*.15+Math.random()*.035});}
- update(e,dt,x,y,menu){this.clock+=dt;this.flameMaterial.uniforms.time.value=this.smokeMaterial.uniforms.time.value=this.clock;const lion=e.power==='lion',magnet=e.power==='magnet',money=e.power==='dollars',saw=e.power==='afuera';if(lion&&!this.lionManeReady)this.loadLionMane();const scale=this.r.heroScale||1;const risk=menu?0:e.meter;const dirty=clamp((risk-VISUAL_STAIN_START)/(100-VISUAL_STAIN_START));for(const m of this.stains)m.userData.pressure.value=menu?-5:risk;this.seep.visible=risk>82&&!menu;this.seep.scale.setScalar(this.seep.visible?.55+clamp((risk-82)/18)*.8:0);
+ update(e,dt,x,y,menu){this.clock+=dt;this.flameMaterial.uniforms.time.value=this.smokeMaterial.uniforms.time.value=this.clock;const lion=e.power==='lion',magnet=e.power==='magnet',money=e.power==='dollars',saw=e.power==='afuera';if(lion&&!this.lionManeReady)this.loadLionMane();const scale=this.r.heroScale||1;const risk=menu?0:visualPressure(e.meter,e.elapsed);const dirty=clamp((risk-VISUAL_STAIN_START)/(100-VISUAL_STAIN_START));for(const m of this.stains)m.userData.pressure.value=menu?-5:risk;this.seep.visible=risk>82&&!menu;this.seep.scale.setScalar(this.seep.visible?.55+clamp((risk-82)/18)*.8:0);
   if(this.headUniforms){this.headUniforms.headReaction.value=this.r.failed?1:this.r.stumble>0?Math.min(1,this.r.stumble/.08):0;this.headUniforms.headExpression.value=this.impactTextures[this.r.failed?1:0];}
   if(this.bones.head&&this.baseHeadScale)this.bones.head.scale.copy(this.baseHeadScale).multiplyScalar(lion?2:1);this.fire.scale.setScalar(lion?0.5:1);for(const {m,color,baseMap}of this.hair){const target=materialName(m)==='rear hair detail'&&lion?this.lionTexture:baseMap;if(m.map!==target){m.map=target;m.emissiveMap=target;m.needsUpdate=true;}m.color.copy(color);m.emissive.setHex(lion?0xff7910:0);m.emissiveMap=target||null;m.emissiveIntensity=lion?(target ? .62 : .7):0;if(lion&&materialName(m)==='rear hair detail')m.color.setHex(0xffd18a);else if(lion)m.color.setHex(m.map?0xffdc9c:0xf2ae26);}this.fire.visible=lion;
   if(!menu&&dt>0&&risk>=VISUAL_LEAK_START){const rate=risk<50?1.8:risk<75?4:risk<90?8: risk<98?12:16;this.dripDebt+=dt*rate;const pelvis=this.bones.pelvis;const rear=pelvis?pelvis.localToWorld(new T.Vector3(0,.02,-.33)):new T.Vector3(x,y+1,.4);while(this.dripDebt>=1){this.leak(rear,risk);this.dripDebt--;}}

@@ -2,7 +2,7 @@ import {RunnerEngine as LegacyEngine,STATES,POWERS as LEGACY_POWERS,QUOTES,meter
 import {difficultyAt,SHOWCASE,chooseRandomPower} from './difficulty.js';
 import {PressChase} from './chase.js';
 import {TEMPLATES,shape,supportAt,sweptContact} from './track.js';
-import {BONUS_POWERS,characterAt,awardCharacters,BIG_HEAD,SMASH,PROTECTED,FLIGHT} from './characters.js';
+import {CHARACTERS,BONUS_POWERS,characterAt,awardCharacters,BIG_HEAD,SMASH,PROTECTED,FLIGHT} from './characters.js';
 import {BREAKABLE,VEHICLES,clearsAhead,PAPER_STORM_INTERVAL} from './power-rules.js';
 import {PAPER_RELIEF,fillRate} from './pressure.js';
 export {STATES,QUOTES,meterBand};
@@ -51,7 +51,12 @@ export class RunnerEngine extends LegacyEngine{
   this.simTicks++;this.previousDistance=this.distance;this.previousX=this.x;this.previousY=this.jumpY+this.groundY+this.airY;this.previousGroundY=this.groundY;this.previousAirY=this.airY;
   if(this.hitStop>0){this.hitStop=Math.max(0,this.hitStop-dt);this.presentationScale=0;return;}
   if(this.slow>0){this.slow=Math.max(0,this.slow-dt);dt*=.72;this.presentationScale=.72;}
-  this.elapsed+=dt;this.actionAge+=dt;this.nearCooldown=Math.max(0,this.nearCooldown-dt);this.speed=Math.min(this.tuning.max,this.tuning.start+this.elapsed*this.tuning.acceleration)*(this.power==='maga'?1.25:1);this.distance+=this.speed*dt;this.score+=this.speed*dt*(this.power==='dollars'?2:1);
+  this.elapsed+=dt;
+  if(CHARACTERS.some(c=>c.unlock>0&&this.elapsed>=c.unlock&&!this.progress.unlocked?.[c.id])){
+   const earned=awardCharacters(this.progress,this.elapsed);this.unlockedThisRun.push(...earned);
+   for(const id of earned)this.emit('characterUnlocked',{id});this.emit('save');
+  }
+  this.actionAge+=dt;this.nearCooldown=Math.max(0,this.nearCooldown-dt);this.speed=Math.min(this.tuning.max,this.tuning.start+this.elapsed*this.tuning.acceleration)*(this.power==='maga'?1.25:1);this.distance+=this.speed*dt;this.score+=this.speed*dt*(this.power==='dollars'?2:1);
   this.laneTime=Math.min(.16,this.laneTime+dt);const t=this.laneTime/.16;this.x=this.laneFrom+(this.lane-this.laneFrom)*(1-(1-t)**3);if(t>=1)this.x=this.lane;
   this.grace=Math.max(0,this.grace-dt);this.activationSafe=Math.max(0,this.activationSafe-dt);this.landingSafe=Math.max(0,this.landingSafe-dt);this.slideTime=Math.max(0,this.slideTime-dt);
   const objects=this.pool.items;for(const o of objects)if(o.active){o.prevZ=o.z;o.z-=this.speed*dt;}
@@ -83,6 +88,6 @@ export class RunnerEngine extends LegacyEngine{
    if(o.z+o.length<-8)o.active=false;
   }
  }
- finish(){this.unlockedThisRun=awardCharacters(this.progress,this.elapsed);super.finish();}
+ finish(){this.unlockedThisRun=[...new Set([...this.unlockedThisRun,...awardCharacters(this.progress,this.elapsed)])];super.finish();}
  snapshot(){return {...super.snapshot(),difficulty:this.difficulty||'medium',openingProtected:this.elapsed<this.tuning.chaseAt,character:characterAt(this.characterIndex||0).id,unlockedThisRun:[...this.unlockedThisRun],groundY:this.groundY,feetY:this.groundY+this.jumpY+this.airY,simTicks:this.simTicks,seed:this.runSeed,patternHistory:[...this.patternHistory],chase:this.chase.snapshot()};}
 }

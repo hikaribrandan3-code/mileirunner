@@ -1,0 +1,107 @@
+{
+  "base": "http://127.0.0.1:5198",
+  "samples": [
+    {
+      "connection": "unthrottled",
+      "menuMs": 261,
+      "sceneMs": 742,
+      "firstPlayMs": 1002,
+      "menuBytes": 1746896,
+      "totalBytes": 14424649,
+      "errors": [],
+      "largest": [
+        {
+          "file": "milei-character.glb",
+          "bytes": 3291420,
+          "ms": 19
+        },
+        {
+          "file": "press-karina.glb",
+          "bytes": 1080652,
+          "ms": 5
+        },
+        {
+          "file": "press-female.glb",
+          "bytes": 975420,
+          "ms": 4
+        },
+        {
+          "file": "press-male.glb",
+          "bytes": 914112,
+          "ms": 10
+        },
+        {
+          "file": "foliage-premium.webp",
+          "bytes": 633610,
+          "ms": 9
+        },
+        {
+          "file": "world-tour-cover-v3.webp",
+          "bytes": 391670,
+          "ms": 12
+        },
+        {
+          "file": "three.core.min.js",
+          "bytes": 381424,
+          "ms": 47
+        },
+        {
+          "file": "three.module.min.js",
+          "bytes": 339208,
+          "ms": 8
+        }
+      ]
+    },
+    {
+      "connection": "5 Mbps / 80 ms latency",
+      "menuMs": 1818,
+      "sceneMs": 22523,
+      "firstPlayMs": 24372,
+      "menuBytes": 904609,
+      "totalBytes": 14423880,
+      "errors": [],
+      "largest": [
+        {
+          "file": "milei-character.glb",
+          "bytes": 3291420,
+          "ms": 16810
+        },
+        {
+          "file": "press-karina.glb",
+          "bytes": 1080652,
+          "ms": 3854
+        },
+        {
+          "file": "press-female.glb",
+          "bytes": 975420,
+          "ms": 3363
+        },
+        {
+          "file": "press-male.glb",
+          "bytes": 914112,
+          "ms": 9189
+        },
+        {
+          "file": "foliage-premium.webp",
+          "bytes": 633610,
+          "ms": 5967
+        },
+        {
+          "file": "world-tour-cover-v3.webp",
+          "bytes": 391670,
+          "ms": 1478
+        },
+        {
+          "file": "three.core.min.js",
+          "bytes": 381424,
+          "ms": 697
+        },
+        {
+          "file": "three.module.min.js",
+          "bytes": 339208,
+          "ms": 2515
+        }
+      ]
+    }
+  ]
+}

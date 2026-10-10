@@ -3,7 +3,7 @@ import {RunnerEngine,STATES,POWERS,meterBand} from './engine.js';
 import {CHARACTERS,characterAt,isUnlocked,BONUS_POWERS} from './characters.js';
 const POWER_ICONS={magnet:'power-0.webp',lion:'power-cat-v2.webp',afuera:'power-chainsaw-v2.webp',dollars:'power-3.webp',rescue:'power-helicopter-v2.webp'};
 import {CharacterSelector} from './selector.js';
-import {RunnerRenderer} from './renderer.js';
+// Load the WebGL module after the illustrated menu becomes visible.
 import {BroadcastUI} from './broadcast.js';
 import {DiaperAudio} from './audio.js';
 import {readSave,writeSave} from './storage.js';
@@ -33,12 +33,12 @@ for(const b of all('[data-difficulty]'))b.addEventListener('click',()=>{prefs.di
 difficultyUI();
 const selector=new CharacterSelector($('#characters'),{progress:engine.progress,prefs,onPlay:async index=>{const version=++launchVersion;void audio.unlock();const chosen=await chooseCharacter(index);if(!chosen||dead||version!==launchVersion||screen!=='characters')return;await run(version);}});
 function characterPortraits(){const c=characterAt(prefs.character),src='../art/selector-'+c.id+'-portrait-v1.webp';for(const image of all('#meter-face,.pause-hero')){image.src=src;image.alt=c.short;}game.dataset.character=c.id;}
-async function selectedArt(index=prefs.character){const c=characterAt(index),required=[...c.intro,...(index===0?['stage']:[])];await Promise.all([...required,c.result,c.portrait].filter(id=>!assets[id]).map(load));if(required.some(id=>!assets[id]))throw Error('Character intro unavailable: '+c.id);}
+async function selectedArt(index=prefs.character){const c=characterAt(index),required=[...c.intro,...(index===0?['stage']:[])];await Promise.all(required.filter(id=>!assets[id]).map(load));if(required.some(id=>!assets[id]))throw Error('Character intro unavailable: '+c.id);}
 async function chooseCharacter(index){
  if(selecting||!isUnlocked(engine.progress,index))return false;
  selecting=true;const prior=prefs.character;characters();
- try{await selectedArt(index);if(dead)return false;await renderer.selectCharacter(index);engine.characterIndex=index;characterPortraits();save();return true;}
- catch(error){console.error(error);notify('No se pudo cargar el personaje. Volvé a intentar.');if(!dead){await renderer.selectCharacter(prior);engine.characterIndex=prior;characterPortraits();}return false;}
+ try{await sceneReady;await selectedArt(index);if(dead)return false;await renderer.selectCharacter(index);engine.characterIndex=index;characterPortraits();save();return true;}
+ catch(error){console.error(error);notify('No se pudo cargar el personaje. Volvé a intentar.');if(!dead){await renderer?.selectCharacter(prior);engine.characterIndex=prior;characterPortraits();}return false;}
  finally{selecting=false;characters();}
 }
 
@@ -47,12 +47,13 @@ function back(){cancelLaunch();show(dialogReturn);}
 async function run(version){
  if(dead||selecting||starting)return;
  version??=++launchVersion;
- starting=true;game.setAttribute('aria-busy','true');for(const button of all('[data-action=run],[data-action=restart]'))button.disabled=true;
+ starting=true;game.setAttribute('aria-busy','true');for(const b of all('[data-action=run],[data-action=restart]'))b.textContent='CARGANDO PISTA…';for(const button of all('[data-action=run],[data-action=restart]'))button.disabled=true;
  // Request sound while the tap still has user activation. Optional sound must
  // never gate a cutscene or a run (Safari can leave resume() pending).
  void audio.unlock();
  try{
-  await Promise.all([renderer.prepareGameplay(),introReady,selectedArt()]);
+  await sceneReady;
+  await Promise.all([renderer.prepareGameplay(),selectedArt()]);
   if(dead||version!==launchVersion)return;
   engine.characterIndex=prefs.character;characterPortraits();introShot=-1;lastBand=-1;lastHud={};
   clearTimeout(calloutTimer);$('#callout').classList.remove('punch');$('#intro-meter').hidden=true;
@@ -62,13 +63,14 @@ async function run(version){
   $('#cinematic').style.pointerEvents='none';show('cinematic');intro();$('#world').focus({preventScroll:true});
   if(document.hidden)pauseHidden();
  }catch(error){notify('No se pudo iniciar. Volvé a intentar.');console.error(error);}
- finally{starting=false;game.removeAttribute('aria-busy');for(const button of all('[data-action=run],[data-action=restart]'))button.disabled=false;}
+ finally{starting=false;tr();game.removeAttribute('aria-busy');for(const button of all('[data-action=run],[data-action=restart]'))button.disabled=false;}
 }
 
 function onEvent(e){broadcast.event(e);if(e.type==='save')save();if(e.type==='pause'){pointer=null;accumulator=0;lastTime=0;audio.pause();show('paused');return;}if(e.type==='resume'){pointer=null;accumulator=0;lastTime=0;audio.resume(engine);show([STATES.INTRO,STATES.REPEAT].includes(engine.state)?'cinematic':'run');return;}if(e.type==='menu'){renderer?.event(e);audio.stopLoops();audio.stopStreamLoop(.3);audio.stopExternal();audio.setMode('menu');void audio.unlock();records();show('menu');return;}audio.event(e);renderer?.event(e);
  if(e.type==='go'){audio.setMode('running');show('run');$('#world').focus({preventScroll:true});if(e.resumed)callout('¡GO!');else if(engine.state===STATES.RUNNING)callout('¡CORRÉ!');}
  if(e.type==='near'){callout(prefs.language==='es'?'¡POR POCO!':'NEAR MISS!','+'+75*engine.combo);haptic(9);}
  if(e.type==='tp')haptic(5);
+ if(e.type==='characterUnlocked'){const c=CHARACTERS.find(c=>c.id===e.id);notify('¡'+c.short+' DESBLOQUEADO!');}
  if(e.type==='stumble'){callout(prefs.language==='es'?'¡CUIDADO!':'STUMBLE!','DIAPER METER +'+(e.penalty||engine.tuning.hit)+'%');haptic(35);}
  if(e.type==='power'){callout(POWERS.find(p=>p.id===e.id).name);haptic([10,25,20]);}
  if(e.type==='destroy')callout(POWERS.find(p=>p.id===e.power)?.name||'¡AFUERA!','+'+e.points);
@@ -76,7 +78,7 @@ function onEvent(e){broadcast.event(e);if(e.type==='save')save();if(e.type==='pa
  if(e.type==='rescueWarning')callout(e.seconds+'…',prefs.language==='es'?'ATERRIZAJE':'LANDING');
  if(e.type==='relief'){callout('¡SALVADO!','+1000');haptic([15,20,15]);}
  if(e.type==='fail'){show('run');haptic([35,30,55]);}
- if(e.type==='end'){records();$('#failure-reason').textContent=engine.failReason==='press'?'LA PRENSA TE ATRAPÓ 📸':engine.failReason==='meter'?'DIAPER METER: 100%':engine.failReason==='bus'||engine.failReason==='vehicle'?'COLECTIVO: 1 · DIGNIDAD: 0':'LA CALLE NO PERDONA';const c=characterAt(prefs.character);$('.results-art').style.backgroundImage='url(../art/'+c.result+'.webp)';$('#quote').textContent=c.index?c.quote:engine.quote;$('#result-distance').textContent=format(engine.distance)+' m';$('#result-tp').textContent=format(engine.tp);$('#result-combo').textContent='×'+engine.bestCombo;$('#result-score').textContent=format(engine.score);$('#result-best').textContent=format(engine.progress.bestScore);$('#new-record').hidden=!engine.newRecord;show('results');if(engine.unlockedThisRun.length)showUnlocks([...engine.unlockedThisRun]);}
+ if(e.type==='end'){records();$('#result-time').textContent=Math.floor(engine.elapsed)+' s';$('#failure-reason').textContent=engine.failReason==='press'?'LA PRENSA TE ATRAPÓ 📸':engine.failReason==='meter'?'DIAPER METER: 100%':engine.failReason==='bus'||engine.failReason==='vehicle'?'COLECTIVO: 1 · DIGNIDAD: 0':'LA CALLE NO PERDONA';const c=characterAt(prefs.character);$('.results-art').style.backgroundImage='url(../art/'+c.result+'.webp)';$('#quote').textContent=c.index?c.quote:engine.quote;$('#result-distance').textContent=format(engine.distance)+' m';$('#result-tp').textContent=format(engine.tp);$('#result-combo').textContent='×'+engine.bestCombo;$('#result-score').textContent=format(engine.score);$('#result-best').textContent=format(engine.progress.bestScore);$('#new-record').hidden=!engine.newRecord;show('results');if(engine.unlockedThisRun.length)showUnlocks([...engine.unlockedThisRun]);}
 }
 function showUnlocks(ids){if(!ids.length)return;const id=ids.shift(),c=CHARACTERS.find(c=>c.id===id);if(!c){showUnlocks(ids);return;}const overlay=document.createElement('section');overlay.className='unlock-reveal';overlay.setAttribute('aria-label','Personaje desbloqueado');const heading=document.createElement('h2');heading.textContent='¡DESBLOQUEADO!';const image=new Image();image.src='../art/selector-'+c.id+'-portrait-v1.webp';image.alt=c.name;const title=document.createElement('h3');title.textContent=c.name;const detail=document.createElement('p');detail.textContent=c.unlock+' s · '+c.powers.map(id=>POWERS.find(p=>p.id===id).name).join(' · ');const button=document.createElement('button');button.className='primary';button.textContent='TOCÁ PARA CONTINUAR';button.onclick=()=>{overlay.remove();showUnlocks(ids);};overlay.append(heading,image,title,detail,button);game.append(overlay);}
 function updateHUD(){text('#distance',format(engine.distance)+' m');text('#tp',format(engine.tp));text('#dollars',format(engine.dollars));text('#combo','×'+engine.combo*(engine.power==='dollars'?2:1));text('#meter-value',Math.floor(engine.meter)+'%');$('#meter-fill').style.width=engine.meter+'%';const band=meterBand(engine.meter),colors=['#8cf347','#ffdf49','#ff9929','#ff4b3f','#ff3159'];if(band!==lastBand){lastBand=band;game.style.setProperty('--meter-color',colors[band]);$('#meter-fill').style.background='linear-gradient(#fff4a2,'+colors[band]+')';$('#meter-status').textContent=(prefs.language==='es'?['TRANQUI','CUIDADO','URGENTE','NO NO NO','CRÍTICO']:['ALL GOOD','CAREFUL','URGENT','NO NO NO','CRITICAL'])[band];}$('#power-hud').hidden=!engine.power;if(engine.power){const p=POWERS.find(p=>p.id===engine.power);if($('#power-name').textContent!==p.name){$('#power-name').textContent=p.name;$('#power-icon').src='../art/'+POWER_ICONS[p.id];game.style.setProperty('--power-color',p.color);}text('#power-time','0:'+String(Math.ceil(engine.powerTime)).padStart(2,'0'));$('#power-progress').value=engine.powerTime/p.duration;}}
@@ -108,12 +110,27 @@ function loop(t){if(dead)return;if(window.DiaperDebug?.freezeFixture){lastTime=t
 function cleanup(){dead=true;cancelLaunch();cancelAnimationFrame(raf);clearTimeout(toastTimer);clearTimeout(calloutTimer);clearTimeout(resizeTimer);audio.dispose();renderer?.dispose();}
 window.addEventListener('pagehide',e=>{if(e.persisted)pauseHidden();else cleanup();});
 window.addEventListener('pageshow',e=>{if(e.persisted){lastTime=0;notify('Pausado. Tocá continuar.');}});
-tr();settingsUI();audio.loadOptional();
+tr();settingsUI();
 const loadingBar=$('#loading-bar');let loaded=0,fontReady=false,loaderArtReady=false,rendererReady=false,gameplayReady=false;function updateLoading(ready=false){const progress=Math.min(97,Math.round(loaded/8*20+(fontReady?5:0)+(loaderArtReady?2:0)+(rendererReady?48:0)+(gameplayReady?25:0)));const percent=ready?100:progress;loadingBar.setAttribute('aria-valuenow',percent);loadingBar.style.setProperty('--load-progress',percent+'%');$('#loading-percent').textContent=percent+'%';if(ready){$('#boot-status').textContent='¡LISTO!';$('#boot').classList.add('boot-ready');}}
 async function load(id){try{const i=new Image();i.src='../art/'+id+'.webp';await i.decode();assets[id]=i;loadErrors=loadErrors.filter(error=>error!==id);}catch(e){if(!loadErrors.includes(id))loadErrors.push(id);}finally{loaded++;updateLoading();}}
-const introReady=Promise.all(['opening-crowd','media-chase','stage','speech','realization','panic','rage','escape'].map(load));
+let sceneReady;const introReady=Promise.resolve();
 
-try{const fonts=document.fonts.ready.then(()=>{fontReady=true;updateLoading();});const loaderImage=Promise.all([...$('#boot').querySelectorAll('img')].map(image=>image.decode().catch(()=>{}))).then(()=>{loaderArtReady=true;updateLoading();});renderer=new RunnerRenderer($('#world'),prefs,assets);const base=renderer.ready.then(()=>{rendererReady=true;updateLoading();});const gameAssets=renderer.prepareGameplay().then(()=>{gameplayReady=true;updateLoading();});await Promise.all([fonts,loaderImage,base,gameAssets,introReady,coverReady]);characterPortraits();const minBoot=Math.max(0,720-(performance.now()-bootStarted));if(minBoot)await new Promise(resolve=>setTimeout(resolve,minBoot));updateLoading(true);await new Promise(resolve=>requestAnimationFrame(resolve));renderer.draw(engine,0);introShot=-1;lastBand=-1;lastHud={};$('#intro-meter').hidden=true;$('#cinematic').classList.remove('handoff');$('#cinematic').style.removeProperty('opacity');$('#cinematic').removeAttribute('data-shot');renderer.shake=0;for(const p of renderer.particles)p.active=false;engine.menu();renderer.draw(engine,0);show('menu');if(testCharacterMode&&query.has('selector'))modal('characters');raf=requestAnimationFrame(loop);parent.postMessage({type:'GAME_READY'},location.origin);
+try{
+ await Promise.all([document.fonts.ready,coverReady]);
+ if(dead)throw Error('Game closed');
+ fontReady=true;updateLoading(true);engine.menu();show('menu');characterPortraits();
+ performance.mark('diaper-menu-ready');parent.postMessage({type:'GAME_READY'},location.origin);
+ sceneReady=(async()=>{
+  const {RunnerRenderer}=await import('./renderer.js');if(dead)return;
+  renderer=new RunnerRenderer($('#world'),prefs,assets);
+  await Promise.all([renderer.ready,renderer.prepareGameplay()]);
+  if(dead){renderer.dispose();return;}
+  rendererReady=gameplayReady=true;performance.mark('diaper-playable-ready');
+  renderer.draw(engine,0);raf=requestAnimationFrame(loop);
+ })();
+ // Handle background failures immediately; Play still awaits the same promise.
+ sceneReady.catch(error=>{if(!dead){console.error(error);notify('La pista no pudo cargar. Recargá para reintentar.');}});
+ await sceneReady;
  if(localPreview&&query.get('test')==='1')window.DiaperDebug={engine,renderer,audio,prefs,assets,ready:()=>introReady,start:()=>{engine.reset();engine.state=STATES.RUNNING;engine.emit('start');engine.emit('go');show('run');},advance:s=>{for(let t=0;t<s;t+=1/60)engine.update(Math.min(1/60,s-t));updateHUD();renderer.draw(engine,0);},input:a=>engine.input(a),activate:id=>engine.activate(id),spawn:(...args)=>engine.spawn(...args),snapshot:()=>({...engine.snapshot(),screen,loadErrors,starting,selecting,render:renderer.snapshot(),audio:audio.snapshot(),broadcast:broadcast.snapshot(),frameP95:[...frameSamples].sort((a,b)=>a-b)[Math.floor(frameSamples.length*.95)]||0,fps:1000/(frameSamples.reduce((a,b)=>a+b,0)/(frameSamples.length||1))}),save,run,share:shareScore};
  if(window.DiaperDebug){const {installAcceptanceControls}=await import('./acceptance-controls.js');installAcceptanceControls(window.DiaperDebug);}
-}catch(e){console.error(e);$('#boot-status').textContent='NO PUDIMOS CARGAR LA PISTA. RECARGÁ PARA REINTENTAR.';$('#boot').dataset.error=e.message;$('#boot-retry').hidden=false;}
+}catch(e){show('boot');console.error(e);$('#boot-status').textContent='NO PUDIMOS CARGAR LA PISTA. RECARGÁ PARA REINTENTAR.';$('#boot').dataset.error=e.message;$('#boot-retry').hidden=false;}

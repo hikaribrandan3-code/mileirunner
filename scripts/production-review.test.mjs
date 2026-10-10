@@ -5,7 +5,7 @@ import {CHARACTERS, FLIGHT, BIG_HEAD} from '../game/rebuild/characters.js';
 import {SHAPES, sweptContact} from '../game/rebuild/track.js';
 import {readSave, writeSave} from '../game/rebuild/storage.js';
 import {difficultyAt} from '../game/rebuild/difficulty.js';
-import {fillRate, PAPER_RELIEF} from '../game/rebuild/pressure.js';
+import {fillRate, PAPER_RELIEF, visualPressure} from '../game/rebuild/pressure.js';
 import {materialName} from '../game/rebuild/rig-materials.js';
 
 function run(power, difficulty='medium') {
@@ -146,4 +146,38 @@ test('exported duplicate materials retain their gameplay semantics',()=>{
   assert.equal(materialName({name:name+'.002'}),name);
   assert.equal(materialName({name}),name);
  }
+});
+
+
+test('cosmetic leakage starts at 20 active seconds regardless of paper relief for every character',()=>{
+ for(const character of CHARACTERS){
+  assert.equal(visualPressure(0,19.99),0,character.id);
+  assert.equal(visualPressure(0,20),84,character.id);
+  assert.equal(visualPressure(0,30),100,character.id);
+  assert.equal(visualPressure(95,10),95,character.id);
+ }
+ const {e}=run();e.elapsed=20;e.meter=0;e.pause();
+ const elapsed=e.elapsed;for(let i=0;i<120;i++)e.update(1/60);
+ assert.equal(e.elapsed,elapsed);assert.equal(e.meter,0);
+ e.reset();assert.equal(e.elapsed,0);assert.equal(visualPressure(0,e.elapsed),0);
+});
+
+
+test('all survival unlocks award at the threshold, persist immediately and survive reload',()=>{
+ for(const [seconds,id] of [[60,'trump'],[90,'bibi'],[120,'ben']]){
+  const {e,events}=run();e.elapsed=seconds-.02;e.meter=0;e.grace=999;e.nextPattern=999;e.powerGap=999;
+  e.update(.01);assert.notEqual(e.progress.unlocked?.[id],true);
+  e.update(.02);assert.equal(e.progress.unlocked[id],true);
+  assert.ok(events.some(event=>event.type==='characterUnlocked'&&event.id===id));
+  assert.ok(events.some(event=>event.type==='save'));
+  const store={value:null,setItem(key,value){this.value=value;},getItem(){return this.value;}};
+  writeSave({progress:e.progress,prefs:{}},store);assert.equal(readSave(store).progress.unlocked[id],true);
+  e.finish();assert.ok(e.unlockedThisRun.includes(id));
+ }
+});
+
+test('saved survival records repair missing historical character unlock flags',()=>{
+ const storage={getItem:()=>JSON.stringify({progress:{bestSurvival:120}})};
+ const progress=readSave(storage).progress;
+ for(const id of ['trump','bibi','ben'])assert.equal(progress.unlocked[id],true);
 });

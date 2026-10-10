@@ -1,7 +1,7 @@
 import {BONUS_POWERS} from './characters.js';
 import {DiaperAudio as LegacyAudio} from '../audio.js';
 export class DiaperAudio extends LegacyAudio{
- async unlock(){const resumed=super.unlock();void this.decodeOptional();await resumed;if(this.mode==='menu')this.setMode('menu');}
+ async unlock(){const resumed=super.unlock();await resumed;if(this.ctx?.state==='running')void this.decodeOptional();if(this.mode==='menu')this.setMode('menu');}
  setMode(mode){super.setMode(mode);if(mode==='menu'&&this.external.menuComedy&&!this.externalSource)this.playExternal(this.external.menuComedy,true,.35);}
  async fetchOptional(src){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);try{const response=await fetch(src,{signal:controller.signal});if(!response.ok)throw Error('Audio unavailable');return await response.arrayBuffer();}finally{clearTimeout(timer);}}
  async loadOptional(){if(!this.manifestReady)this.manifestReady=this.fetchOptional(new URL('../audio/manifest-v3.json',import.meta.url)).then(bytes=>JSON.parse(new TextDecoder().decode(bytes))).catch(()=>({}));this.manifest=await this.manifestReady;return this.manifest;}
