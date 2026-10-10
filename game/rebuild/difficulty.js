@@ -12,6 +12,8 @@ export const FLIGHT_PICKUP_CHANCE=.8;
 export function chooseRandomPower(character,lastPower,random){
  const flight=SHOWCASE[character.id][0];
  if(random()<FLIGHT_PICKUP_CHANCE)return flight;
- const pool=[...character.powers.filter(id=>id!==flight),'magnet','magnet','dollars'].filter(id=>id!==lastPower);
- return pool[Math.floor(random()*pool.length)];
+ const pool=[...character.powers.filter(id=>id!==flight),'magnet','magnet','dollars'];
+ if(character.id==='ben')pool.push('chicken','chicken');
+ const available=pool.filter(id=>id!==lastPower);
+ return available[Math.floor(random()*available.length)];
 }
